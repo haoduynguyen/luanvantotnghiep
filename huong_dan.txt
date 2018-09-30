@@ -1,0 +1,33 @@
+-Huong dan cai dat :
+-Chay lenh: php artisan migrate -> tao table user
+-Chay lenh: php artisan db:seed -> tao tk admin
+
+------
++Tao controller cho admin :
+=> Toan bo controller cho admin nen duoc luu trong folder Http/Controllers/Admin
+=> Vi du su dung lenh : php artisan make:controller Admin/UserController
+
++Tao controller cho frontend :
+=> Toan bo controller cho admin nen duoc luu trong folder Http/Controllers/FrontEnd
+=> Vi du su dung lenh : php artisan make:controller FrontEnd/HomeController
+
++Tao controller cho Api :
+=> Toan bo controller cho api nen duoc luu trong folder Http/Controllers/Api
+=> Vi du su dung lenh : php artisan make:controller Api/UserController hoặc  php artisan make:controller Api/UserController --resource
+
++Tao model :
+=>Toan bo model nen dc luu trong app\Models
+=>Vi du : php artisan make:model Models/Demo
+
++Tao repository
+=>php artisan repository User : tao repository
+
+
+***********
+custom tooltip
+<button tooltip="Simple Tooltip"> Click Here!! </button>
+<button tooltip="Buttom Tooltip " tooltip-position="buttom"> Click Here!! </button>
+<span tooltip='Input tooltip ^_^' tooltip-position='buttom' class="input">
+<input  type="text"  /> </span>
+<button tooltip="Right Tooltip ^_^" tooltip-position="right"> Click Here!! </button>
+<button tooltip="Left Tooltip ^_^" tooltip-position="left"> Click Here!! </button>
