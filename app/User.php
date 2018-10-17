@@ -2,14 +2,16 @@
 
 namespace App;
 
-use App\Models\RoleRel;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+
 abstract class UserRel
 {
     const ROLE = "role";
+    const PROFILE = "profile";
 }
+
 class User extends Authenticatable implements JWTSubject
 {
     protected $table = 'users';
@@ -33,14 +35,25 @@ class User extends Authenticatable implements JWTSubject
         'password', 'remember_token',
     ];
 
+    //belongsToMany la quan he n-n
     public function role()
     {
-        $this->belongsToMany('App/Models/Role', 'api_user_role_relation', 'role_id', 'user_id');
+        return $this->belongsToMany('App\Models\Role', 'api_user_role_relation', 'user_id', 'role_id');
     }
+
+    //hasOne la quan he 1-1
+    public function profile()
+    {
+        return $this->hasOne('App\Models\UserProfile', 'user_id');
+    }
+
     public function getUserQuery()
     {
-        $this->with(UserRel::ROLE);
+        return $this->with(UserRel::ROLE)
+            ->with(UserRel::PROFILE);
     }
+
+
     public function getJWTIdentifier()
     {
         return $this->getKey();

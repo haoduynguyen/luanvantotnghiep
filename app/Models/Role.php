@@ -21,11 +21,11 @@ class Role extends Model
 
     public function users()
     {
-        $this->belongsToMany('App/User','api_user_role','role_id','user_id');
+       return $this->belongsToMany('App/User','api_user_role','role_id','user_id');
     }
 
     public function getRoleQuery()
     {
-        $this->with(RoleRel::USER);
+       return $this->with(RoleRel::USER);
     }
 }
