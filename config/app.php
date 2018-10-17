@@ -177,6 +177,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Repositories\RegisterRepositories::class,
+        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
 
     ],
 

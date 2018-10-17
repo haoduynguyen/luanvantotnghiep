@@ -2,22 +2,22 @@
 
 namespace App\Repositories\Repository;
 
-use App\Repositories\Interfaces\UserRepositoryInterface;
-use App\User;
+use App\Models\UserProfile;
+use App\Repositories\Interfaces\UserProfileRepositoryInterface;
 
-class UserRepository implements UserRepositoryInterface
+class UserProfileRepository implements UserProfileRepositoryInterface
 {
-    private $user;
+    private $userProfile;
 
     public function __construct()
     {
-        $this->user = new User();
+        $this->userProfile = new UserProfile();
     }
 
 
     public function get($id, $columns = array('*'))
     {
-        $data = $this->user->find($id, $columns);
+        $data = $this->userProfile->find($id, $columns);
         if ($data) {
             return $data;
         }
@@ -27,25 +27,25 @@ class UserRepository implements UserRepositoryInterface
 
     public function all($columns = array('*'))
     {
-        $listData = $this->user->get($columns);
+        $listData = $this->userProfile->get($columns);
         return $listData;
     }
 
     public function paginate($perPage = 15, $columns = array('*'))
     {
-        $listData = $this->user->paginate($perPage, $columns);
+        $listData = $this->userProfile->paginate($perPage, $columns);
         return $listData;
     }
 
     public function save(array $data)
     {
-        return $this->user->create($data);
+        return $this->userProfile->create($data);
 
     }
 
     public function update(array $data, $id)
     {
-        $dep = $this->user->find($id);
+        $dep = $this->userProfile->find($id);
         if ($dep) {
             foreach ($dep->getFillable() as $field) {
                 if (array_key_exists($field, $data)) {
@@ -65,7 +65,7 @@ class UserRepository implements UserRepositoryInterface
     public function getByColumn($column, $value, $columnsSelected = array('*'))
     {
 
-        $data = $this->user->where($column, $value)->first();
+        $data = $this->userProfile->where($column, $value)->first();
         if ($data) {
             return $data;
         }
@@ -77,7 +77,7 @@ class UserRepository implements UserRepositoryInterface
     public function getByMultiColumn(array $where, $columnsSelected = array('*'))
     {
 
-        $data = $this->user;
+        $data = $this->userProfile;
 
         foreach ($where as $key => $value) {
             $data = $data->where($key, $value);
@@ -97,7 +97,7 @@ class UserRepository implements UserRepositoryInterface
     public function getListByColumn($column, $value, $columnsSelected = array('*'))
     {
 
-        $data = $this->user->where($column, $value)->get();
+        $data = $this->userProfile->where($column, $value)->get();
         if ($data) {
             return $data;
         }
@@ -109,7 +109,7 @@ class UserRepository implements UserRepositoryInterface
     public function getListByMultiColumn(array $where, $columnsSelected = array('*'))
     {
 
-        $data = $this->user;
+        $data = $this->userProfile;
 
         foreach ($where as $key => $value) {
             $data = $data->where($key, $value);
@@ -127,7 +127,7 @@ class UserRepository implements UserRepositoryInterface
 
     public function delete($id)
     {
-        $del = $this->user->find($id);
+        $del = $this->userProfile->find($id);
         if ($del !== null) {
             $del->delete();
             return true;
@@ -138,7 +138,7 @@ class UserRepository implements UserRepositoryInterface
 
     public function deleteMulti(array $data)
     {
-        $del = $this->user->whereIn("id", $data["list_id"])->delete();
+        $del = $this->userProfile->whereIn("id", $data["list_id"])->delete();
         if ($del) {
 
             return true;

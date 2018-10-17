@@ -7,8 +7,18 @@ class RegisterRepositories extends ServiceProvider
   { 
  
         $this->app->bind( 
+           'App\Repositories\Interfaces\UserProfileRepositoryInterface', 
+           'App\Repositories\Repository\UserProfileRepository' 
+ 
+        ); 
+        $this->app->bind( 
            'App\Repositories\Interfaces\UserRepositoryInterface', 
            'App\Repositories\Repository\UserRepository' 
+ 
+        ); 
+        $this->app->bind( 
+           'App\Repositories\Interfaces\UserRoleRelationRepositoryInterface', 
+           'App\Repositories\Repository\UserRoleRelationRepository' 
  
         ); 
   } 
