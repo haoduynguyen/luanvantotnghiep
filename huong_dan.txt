@@ -22,6 +22,9 @@
 +Tao repository
 =>php artisan repository User : tao repository
 
++Tao migration
+=>php artisan make:migration name --create="api_name"
+
 
 ***********
 custom tooltip

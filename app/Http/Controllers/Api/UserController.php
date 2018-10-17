@@ -32,6 +32,7 @@ class UserController extends Controller
     public function index()
     {
         $data = $this->user->all();
+        $this->user->getByColumn('name','hao');
         return $data;
     }
 
