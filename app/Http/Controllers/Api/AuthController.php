@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Constants\Message;
+use App\Constants\StatusCode;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Controller;
 
 class AuthController extends Controller
 {
@@ -21,7 +23,7 @@ class AuthController extends Controller
     /**
      * Get a JWT token via given credentials.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      *
      * @return \Illuminate\Http\JsonResponse
      */
@@ -31,10 +33,10 @@ class AuthController extends Controller
         if ($token = $this->guard()->attempt($credentials)) {
             $user = auth()->user();
             $user['token'] = $token;
-            return $this->dataSuccess('success',$user,200);
+            return $this->dataSuccess(Message::SUCCESS, $user, StatusCode::SUCCESS);
         }
 
-        return response()->json(['error' => 'Unauthorized'], 401);
+        return $this->dataError( 'Unauthorized', false, StatusCode::UNAUTHORIZED);
     }
 
     /**

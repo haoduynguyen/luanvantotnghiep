@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Constants\Message;
+use App\Constants\StatusCode;
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\UserProfileRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
@@ -31,8 +33,16 @@ class UserController extends Controller
 
     public function index()
     {
-        $data = $this->user->getUser();
-        return $data;
+        $user = $this->user->getUser();
+        try {
+            if ($user) {
+                return $this->dataSuccess(Message::SUCCESS, $user, StatusCode::SUCCESS);
+            } else {
+                return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+            }
+        } catch (Exception $e) {
+            return $this->dataError(Message::SERVER_ERROR, $e, StatusCode::SERVER_ERROR);
+        }
     }
 
     /**
@@ -74,20 +84,20 @@ class UserController extends Controller
                 $array[] = ['key' => $key, 'mess' => $error];
             }
 
-            return $this->dataError('error', $array, 400);
+            return $this->dataError(Message::ERROR, $array, StatusCode::BAD_REQUEST);
 
         } else {
             $data = $request->all();
             try {
-                $user = $this->user->save(['email' => $request->email, 'password' => Hash::make($request->password), 'name' => $request->last_name]);
+                $user = $this->user->save(['email' => $request->email, 'password' => Hash::make($request->password), 'name' => $request->first_name]);
                 if ($user) {
                     $userProfile = $this->userProfile->save($data);
                     $userProfile->update(['user_id' => $user->id]);
                     $this->userRole->save(['user_id' => $user->id, "role_id" => $request->role_id]);
                 }
-                return $this->dataSuccess('success', true, 200);
+                return $this->dataSuccess(Message::SUCCESS, true, StatusCode::SUCCESS);
             } catch (Exception $e) {
-                return $this->dataError('Server Error', $e, 500);
+                return $this->dataError(Message::SERVER_ERROR, $e, StatusCode::SERVER_ERROR);
             }
 
         }
