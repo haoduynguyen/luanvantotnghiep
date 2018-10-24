@@ -10,7 +10,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-    public function dataSuccess($mes, $data = [], $code)
+    public function dataSuccess($mes, $data, $code)
     {
         return response()->json([
             'success' => true,
@@ -19,7 +19,7 @@ class Controller extends BaseController
         ], $code);
     }
 
-    public function dataError($mes, $data = [], $code)
+    public function dataError($mes, $data , $code)
     {
         return response()->json([
             'success' => false,

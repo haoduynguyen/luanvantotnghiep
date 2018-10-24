@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateApiUserRoleRelation extends Migration
+class AddTableDbLvtn extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,8 @@ class CreateApiUserRoleRelation extends Migration
      */
     public function up()
     {
-        Schema::create('api_user_role_relation', function (Blueprint $table) {
+        Schema::table('api_role', function (Blueprint $table) {
+            $table->timestamps();
         });
     }
 
@@ -24,8 +25,6 @@ class CreateApiUserRoleRelation extends Migration
      */
     public function down()
     {
-        Schema::table('api_user_role_relation', function (Blueprint $table) {
-            //
-        });
+        //Schema::dropIfExists('api_role');
     }
 }
