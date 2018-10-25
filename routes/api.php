@@ -27,6 +27,9 @@ Route::post('login', 'Api\AuthController@login');
 
 //Role
 Route::resource('role', 'Api\RoleController');
+
+//Import Lich Day
+Route::post('import-excel','Api\LichDayController@import');
 Route::group([
 
     'middleware' => 'api',

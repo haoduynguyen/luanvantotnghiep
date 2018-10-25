@@ -7,6 +7,11 @@ class RegisterRepositories extends ServiceProvider
   { 
  
         $this->app->bind( 
+           'App\Repositories\Interfaces\LichDayRepositoryInterface', 
+           'App\Repositories\Repository\LichDayRepository' 
+ 
+        ); 
+        $this->app->bind( 
            'App\Repositories\Interfaces\RoleRepositoryInterface', 
            'App\Repositories\Repository\RoleRepository' 
  

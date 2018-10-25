@@ -10,6 +10,8 @@ abstract class UserRel
 {
     const ROLE = "role";
     const PROFILE = "profile";
+    const GV_PHONG_MAY = 'gvPhongMay';
+    const KTV_PHONG_MAY = 'ktvPhongMay';
 }
 
 class User extends Authenticatable implements JWTSubject
@@ -45,6 +47,16 @@ class User extends Authenticatable implements JWTSubject
     public function profile()
     {
         return $this->hasOne('App\Models\UserProfile', 'user_id');
+    }
+
+    public function gvPhongMay()
+    {
+        return $this->belongsToMany('App\Models\PhongMay', 'api_phong_may_user_elation', 'gv_id', 'phong_may_id');
+    }
+
+    public function ktvPhongMay()
+    {
+        return $this->belongsToMany('App\Models\PhongMay', 'api_phong_may_user_elation', 'ktv_id', 'phong_may_id');
     }
 
     public function getUserQuery()

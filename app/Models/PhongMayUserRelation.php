@@ -16,5 +16,17 @@ class PhongMayUserRelation extends Model
         'mota_gv',
         'mota_ktv',
     ];
+//    public function phongMay()
+//    {
+//        return $this->hasMany('App\Models\PhongMay','phong_may_id');
+//    }
+//    public function giangVien()
+//    {
+//        return $this->hasMany('App\User','gv_id');
+//    }
+//    public function ktThuatVien()
+//    {
+//        return $this->hasMany('App\User','ktv_id');
+//    }
     public $timestamps = true;
 }
