@@ -27,6 +27,9 @@ Route::post('login', 'Api\AuthController@login');
 
 //Role
 Route::resource('role', 'Api\RoleController');
+Route::resource('ca', 'Api\CaController');
+Route::resource('thu', 'Api\ThuController');
+Route::resource('hoc-ky', 'Api\HocKyController');
 
 //Import Lich Day
 Route::post('import-excel','Api\LichDayController@import');
