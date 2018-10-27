@@ -2,22 +2,24 @@
 
 namespace App\Repositories\Repository;
 
-use App\Models\LichDay;
-use App\Repositories\Interfaces\LichDayRepositoryInterface;
+use App\Models\NhomLop;
+use App\Repositories\Interfaces\NhomLopRepositoryInterface;
 
-class LichDayRepository implements LichDayRepositoryInterface
+class NhomLopRepository implements NhomLopRepositoryInterface
 {
-    private $lichDay;
+    private $nhomLop;
 
     public function __construct()
     {
-        $this->lichDay = new LichDay();
+        $this->nhomLop = new NhomLop();
     }
 
 
     public function get($id, $columns = array('*'))
     {
-        $data = $this->lichDay->find($id, $columns);
+
+        $data = $this->nhomLop->find($id, $columns);
+        dd($data);
         if ($data) {
             return $data;
         }
@@ -27,25 +29,25 @@ class LichDayRepository implements LichDayRepositoryInterface
 
     public function all($columns = array('*'))
     {
-        $listData = $this->lichDay->get($columns);
+        $listData = $this->nhomLop->get($columns);
         return $listData;
     }
 
     public function paginate($perPage = 15, $columns = array('*'))
     {
-        $listData = $this->lichDay->paginate($perPage, $columns);
+        $listData = $this->nhomLop->paginate($perPage, $columns);
         return $listData;
     }
 
     public function save(array $data)
     {
-        return $this->lichDay->create($data);
+        return $this->nhomLop->create($data);
 
     }
 
     public function update(array $data, $id)
     {
-        $dep = $this->lichDay->find($id);
+        $dep = $this->nhomLop->find($id);
         if ($dep) {
             foreach ($dep->getFillable() as $field) {
                 if (array_key_exists($field, $data)) {
@@ -65,7 +67,7 @@ class LichDayRepository implements LichDayRepositoryInterface
     public function getByColumn($column, $value, $columnsSelected = array('*'))
     {
 
-        $data = $this->lichDay->where($column, $value)->first();
+        $data = $this->nhomLop->where($column, $value)->first();
         if ($data) {
             return $data;
         }
@@ -77,7 +79,7 @@ class LichDayRepository implements LichDayRepositoryInterface
     public function getByMultiColumn(array $where, $columnsSelected = array('*'))
     {
 
-        $data = $this->lichDay;
+        $data = $this->nhomLop;
 
         foreach ($where as $key => $value) {
             $data = $data->where($key, $value);
@@ -97,7 +99,7 @@ class LichDayRepository implements LichDayRepositoryInterface
     public function getListByColumn($column, $value, $columnsSelected = array('*'))
     {
 
-        $data = $this->lichDay->where($column, $value)->get();
+        $data = $this->nhomLop->where($column, $value)->get();
         if ($data) {
             return $data;
         }
@@ -109,7 +111,7 @@ class LichDayRepository implements LichDayRepositoryInterface
     public function getListByMultiColumn(array $where, $columnsSelected = array('*'))
     {
 
-        $data = $this->lichDay;
+        $data = $this->nhomLop;
 
         foreach ($where as $key => $value) {
             $data = $data->where($key, $value);
@@ -127,7 +129,7 @@ class LichDayRepository implements LichDayRepositoryInterface
 
     public function delete($id)
     {
-        $del = $this->lichDay->find($id);
+        $del = $this->nhomLop->find($id);
         if ($del !== null) {
             $del->delete();
             return true;
@@ -138,18 +140,13 @@ class LichDayRepository implements LichDayRepositoryInterface
 
     public function deleteMulti(array $data)
     {
-        $del = $this->lichDay->whereIn("id", $data["list_id"])->delete();
+        $del = $this->nhomLop->whereIn("id", $data["list_id"])->delete();
         if ($del) {
 
             return true;
         } else {
             return false;
         }
-    }
-    public function getLichDay()
-    {
-        $data  = $this->lichDay->lichDayQuery()->get();
-        return $data;
     }
 
 } 

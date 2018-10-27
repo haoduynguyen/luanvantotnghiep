@@ -31,31 +31,31 @@ class LichDay extends Model
     ];
     public function hocKy()
     {
-        return $this->hasMany('App\Models\HocKy','hk_id');
+        return $this->belongsTo('App\Models\HocKy','hk_id');
     }
     public function ca()
     {
-        return $this->hasMany('App\Models\Ca','ca_id');
+        return $this->belongsTo('App\Models\Ca','ca_id');
     }
     public function phongMay()
     {
-        return $this->hasMany('App\Models\PhongMay','phong_may_id');
+        return $this->belongsTo('App\Models\PhongMay','phong_may_id');
     }
     public function nhomLop()
     {
-        return $this->hasMany('App\Models\NhomLop','nhom_lop_id');
+        return $this->belongsTo('App\Models\NhomLop','nhom_lop_id');
     }
     public function MonHoc()
     {
-        return $this->hasMany('App\Models\MonHoc','mon_hoc_id');
+        return $this->belongsTo('App\Models\MonHoc','mon_hoc_id');
     }
     public function thu()
     {
-        return $this->hasMany('App\Models\Thu','thu_id');
+        return $this->belongsTo('App\Models\Thu','thu_id');
     }
     public function user()
     {
-        return $this->hasMany('App\User','user_id');
+        return $this->belongsTo('App\User','user_id');
     }
 
     public function lichDayQuery()

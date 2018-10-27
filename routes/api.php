@@ -30,6 +30,7 @@ Route::resource('role', 'Api\RoleController');
 
 //Import Lich Day
 Route::post('import-excel','Api\LichDayController@import');
+Route::get('get-lich','Api\LichDayController@index');
 Route::group([
 
     'middleware' => 'api',

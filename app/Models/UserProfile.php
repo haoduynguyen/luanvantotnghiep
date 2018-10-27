@@ -14,5 +14,7 @@ class UserProfile extends Model
         'gender',
         'phone',
         'user_id',
+        'ma_nhan_vien',
     ];
+    public $timestamps = true;
 }

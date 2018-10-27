@@ -13,6 +13,8 @@ class PhongMay extends Model
     protected $fillable = [
         'id',
         'name',
+        'mo_ta',
+        'so_may',
     ];
     public function giangVien()
     {
