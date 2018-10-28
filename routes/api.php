@@ -30,6 +30,7 @@ Route::resource('role', 'Api\RoleController');
 Route::resource('ca', 'Api\CaController');
 Route::resource('thu', 'Api\ThuController');
 Route::resource('hoc-ky', 'Api\HocKyController');
+Route::resource('dang-ky-nghi', 'Api\DangKyNghiController');
 
 //Import Lich Day
 Route::post('import-excel','Api\LichDayController@import');

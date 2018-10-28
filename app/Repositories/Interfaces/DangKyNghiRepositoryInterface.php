@@ -11,5 +11,6 @@ interface DangKyNghiRepositoryInterface
  public function getByColumn($column,$value) ;  
  public function getListByColumn($column,$value,$columnsSelected = array('*')) ;  
  public function delete($id);  
- public function deleteMulti(array $data);  
+ public function deleteMulti(array $data);
+ public function test();
 } 
