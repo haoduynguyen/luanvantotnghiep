@@ -11,6 +11,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-         //$this->call(UsersTableSeeder::class);
+
+        for ($i = 1; $i <= 25; $i++) {
+            \Illuminate\Support\Facades\DB::table('api_tuan')->insert([
+                'name' => 't' . $i,
+                'description'=>'Tuần ' .$i,
+            ]);
+        }
+
     }
 }

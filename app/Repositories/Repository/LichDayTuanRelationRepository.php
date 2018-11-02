@@ -2,22 +2,22 @@
 
 namespace App\Repositories\Repository;
 
-use App\Models\LichDay;
-use App\Repositories\Interfaces\LichDayRepositoryInterface;
+use App\Repositories\Interfaces\LichDayTuanRelationRepositoryInterface;
+use App\Models\LichDayTuanRelation;
 
-class LichDayRepository implements LichDayRepositoryInterface
+class LichDayTuanRelationRepository implements LichDayTuanRelationRepositoryInterface
 {
-    private $lichDay;
+    private $lichDayTuanRelation;
 
     public function __construct()
     {
-        $this->lichDay = new LichDay();
+        $this->lichDayTuanRelation = new LichDayTuanRelation();
     }
 
 
     public function get($id, $columns = array('*'))
     {
-        $data = $this->lichDay->find($id, $columns);
+        $data = $this->lichDayTuanRelation->find($id, $columns);
         if ($data) {
             return $data;
         }
@@ -27,25 +27,25 @@ class LichDayRepository implements LichDayRepositoryInterface
 
     public function all($columns = array('*'))
     {
-        $listData = $this->lichDay->get($columns);
+        $listData = $this->lichDayTuanRelation->get($columns);
         return $listData;
     }
 
     public function paginate($perPage = 15, $columns = array('*'))
     {
-        $listData = $this->lichDay->paginate($perPage, $columns);
+        $listData = $this->lichDayTuanRelation->paginate($perPage, $columns);
         return $listData;
     }
 
     public function save(array $data)
     {
-        return $this->lichDay->create($data);
+        return $this->lichDayTuanRelation->create($data);
 
     }
 
     public function update(array $data, $id)
     {
-        $dep = $this->lichDay->find($id);
+        $dep = $this->lichDayTuanRelation->find($id);
         if ($dep) {
             foreach ($dep->getFillable() as $field) {
                 if (array_key_exists($field, $data)) {
@@ -65,7 +65,7 @@ class LichDayRepository implements LichDayRepositoryInterface
     public function getByColumn($column, $value, $columnsSelected = array('*'))
     {
 
-        $data = $this->lichDay->where($column, $value)->first();
+        $data = $this->lichDayTuanRelation->where($column, $value)->first();
         if ($data) {
             return $data;
         }
@@ -77,7 +77,7 @@ class LichDayRepository implements LichDayRepositoryInterface
     public function getByMultiColumn(array $where, $columnsSelected = array('*'))
     {
 
-        $data = $this->lichDay;
+        $data = $this->lichDayTuanRelation;
 
         foreach ($where as $key => $value) {
             $data = $data->where($key, $value);
@@ -97,7 +97,7 @@ class LichDayRepository implements LichDayRepositoryInterface
     public function getListByColumn($column, $value, $columnsSelected = array('*'))
     {
 
-        $data = $this->lichDay->where($column, $value)->get();
+        $data = $this->lichDayTuanRelation->where($column, $value)->get();
         if ($data) {
             return $data;
         }
@@ -109,7 +109,7 @@ class LichDayRepository implements LichDayRepositoryInterface
     public function getListByMultiColumn(array $where, $columnsSelected = array('*'))
     {
 
-        $data = $this->lichDay;
+        $data = $this->lichDayTuanRelation;
 
         foreach ($where as $key => $value) {
             $data = $data->where($key, $value);
@@ -127,7 +127,7 @@ class LichDayRepository implements LichDayRepositoryInterface
 
     public function delete($id)
     {
-        $del = $this->lichDay->find($id);
+        $del = $this->lichDayTuanRelation->find($id);
         if ($del !== null) {
             $del->delete();
             return true;
@@ -138,20 +138,13 @@ class LichDayRepository implements LichDayRepositoryInterface
 
     public function deleteMulti(array $data)
     {
-        $del = $this->lichDay->whereIn("id", $data["list_id"])->delete();
+        $del = $this->lichDayTuanRelation->whereIn("id", $data["list_id"])->delete();
         if ($del) {
 
             return true;
         } else {
             return false;
         }
-    }
-    public function getLichDay($param)
-    {
-        $data  = $this->lichDay->lichDayQuery()->where('hk_id',$param['hk_id'])->where('phong_may_id',$param['phong_may_id'])->whereHas('tuan', function ($query) use($param)  {
-            $query->where('tuan_id', $param['tuan_id'])->where('status','x');
-        })->get();
-        return $data;
     }
 
 } 

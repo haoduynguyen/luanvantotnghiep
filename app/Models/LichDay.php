@@ -11,7 +11,8 @@ abstract class LichDayRel
     const NHOM_LOP = 'nhomLop';
     const MON_HOC = 'MonHoc';
     const THU = 'thu';
-    const USER = 'user';
+    const USER = 'user.profile';
+    const TUAN = 'tuan';
 }
 class LichDay extends Model
 {
@@ -25,7 +26,6 @@ class LichDay extends Model
         'thu_id',
         'nhom_lop_id',
         'mon_hoc_id',
-        'tuan_hoc',
         'tuan_mon',
         'ca_id',
     ];
@@ -58,6 +58,10 @@ class LichDay extends Model
         return $this->belongsTo('App\User','user_id');
     }
 
+    public function tuan()
+    {
+        return $this->hasMany('App\Models\LichDayTuanRelation','lich_day_id');
+    }
     public function lichDayQuery()
     {
         return $this->with(LichDayRel::USER)
@@ -66,7 +70,8 @@ class LichDay extends Model
             ->with(LichDayRel::MON_HOC)
             ->with(LichDayRel::NHOM_LOP)
             ->with(LichDayRel::PHONG_MAY)
-            ->with(LichDayRel::THU);
+            ->with(LichDayRel::THU)
+            ->with(LichDayRel::TUAN);
     }
     public $timestamps = true;
 }

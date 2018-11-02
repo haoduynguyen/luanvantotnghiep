@@ -32,6 +32,11 @@ class RegisterRepositories extends ServiceProvider
  
         ); 
         $this->app->bind( 
+           'App\Repositories\Interfaces\LichDayTuanRelationRepositoryInterface', 
+           'App\Repositories\Repository\LichDayTuanRelationRepository' 
+ 
+        ); 
+        $this->app->bind( 
            'App\Repositories\Interfaces\MonHocRepositoryInterface', 
            'App\Repositories\Repository\MonHocRepository' 
  
@@ -54,6 +59,11 @@ class RegisterRepositories extends ServiceProvider
         $this->app->bind( 
            'App\Repositories\Interfaces\ThuRepositoryInterface', 
            'App\Repositories\Repository\ThuRepository' 
+ 
+        ); 
+        $this->app->bind( 
+           'App\Repositories\Interfaces\TuanRepositoryInterface', 
+           'App\Repositories\Repository\TuanRepository' 
  
         ); 
         $this->app->bind( 

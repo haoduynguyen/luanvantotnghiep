@@ -22,5 +22,5 @@ interface LichDayRepositoryInterface
 
     public function deleteMulti(array $data);
 
-    public function getLichDay();
+    public function getLichDay($param);
 } 
