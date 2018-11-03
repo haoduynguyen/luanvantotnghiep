@@ -4,14 +4,18 @@ namespace App\Repositories\Repository;
 
 use App\Models\UserProfile;
 use App\Repositories\Interfaces\UserProfileRepositoryInterface;
+use App\Repositories\Interfaces\UserRepositoryInterface;
+use App\User;
 
 class UserProfileRepository implements UserProfileRepositoryInterface
 {
     private $userProfile;
+    private $user;
 
     public function __construct()
     {
         $this->userProfile = new UserProfile();
+        $this->user = new User();
     }
 
 
@@ -145,6 +149,11 @@ class UserProfileRepository implements UserProfileRepositoryInterface
         } else {
             return false;
         }
+    }
+    public function getUser()
+    {
+        $data = $this->user->getUserQuery()->get();
+        return $data;
     }
 
 } 

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 abstract class DangKyNghiRel
 {
     const GIANG_VIEN = 'GiangVien';
-    const USER = 'User';
+    const USER = 'User.profile';
     const LICH_DAY = 'LichDay';
 
 }

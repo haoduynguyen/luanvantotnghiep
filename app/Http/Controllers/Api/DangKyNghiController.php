@@ -56,7 +56,7 @@ class DangKyNghiController extends Controller
     {
         $validator = \Validator::make($request->all(), [
             'lich_day_id' => 'required',
-            'gv_id' => 'required|unique:users',
+            //'gv_id' => 'required|exists:users',
         ]);
         if ($validator->fails()) {
 

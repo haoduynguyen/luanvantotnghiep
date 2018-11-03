@@ -149,6 +149,14 @@ class DangKyNghiRepository implements DangKyNghiRepositoryInterface
 
     public function test()
     {
+//        $data = $this->dangKyNghi->get();
+//        foreach ($data as $value)
+//        {
+//            $a = $value->GiangVien;
+//            $b = $value->LichDay;
+//            $c = $value->User;
+//        }
+//        dd($value);
         $data = $this->dangKyNghi->DangKyNghiQuery()->get();
         return $data;
     }
