@@ -122,7 +122,17 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
+        $data  = $this->user->getUserFromID($id);
+        try {
+            if ($data) {
+                return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
+            } else {
+                return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+            }
+        } catch (Exception $e) {
+            return $this->dataError(Message::SERVER_ERROR, $e, StatusCode::SERVER_ERROR);
+        }
+
     }
 
     /**
