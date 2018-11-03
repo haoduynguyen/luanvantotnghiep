@@ -152,5 +152,9 @@ class UserRepository implements UserRepositoryInterface
         $data = $this->user->getUserQuery()->get();
         return $data;
     }
-
+    public function getUserFromID($id)
+    {
+        $data = $this->user->getUserQuery()->find($id);
+        return $data;
+    }
 } 

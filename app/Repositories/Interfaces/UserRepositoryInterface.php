@@ -23,4 +23,6 @@ interface UserRepositoryInterface
     public function deleteMulti(array $data);
 
     public function getUser();
+
+    public function getUserFromID($id);
 } 
