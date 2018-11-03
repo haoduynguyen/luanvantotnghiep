@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Repositories\Interfaces\PhongMayRepositoryInterface;
 use App\Constants\Message;
 use App\Constants\StatusCode;
+use App\Http\Controllers\Controller;
+use App\Repositories\Interfaces\PhongMayRepositoryInterface;
+use Illuminate\Http\Request;
+
 class PhongMayController extends Controller
 {
     /**
@@ -15,6 +16,7 @@ class PhongMayController extends Controller
      * @return \Illuminate\Http\Response
      */
     private $phongMay;
+
     public function __construct(PhongMayRepositoryInterface $phongMayRepository)
     {
         $this->phongMay = $phongMayRepository;
@@ -22,16 +24,15 @@ class PhongMayController extends Controller
 
     public function index()
     {
-        $data  = $this->phongMay->all();
+        $data = $this->phongMay->all();
         try {
             if ($data) {
                 return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
-            }
-            else {
-                return $this->dataError(Message::ERROR , false, StatusCode::BAD_REQUEST);
+            } else {
+                return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
             }
         } catch (\Exception $e) {
-            return $this->dataError(Message::SERVER_ERROR , $e, StatusCode::SERVER_ERROR);
+            return $this->dataError(Message::SERVER_ERROR, $e, StatusCode::SERVER_ERROR);
         }
     }
 
@@ -48,18 +49,49 @@ class PhongMayController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        //
+        $validator = \Validator::make($request->all(), [
+            'name' => 'required',
+            'mo_ta' => 'required',
+            'so_may' => 'required',
+            //'gv_id' => 'required|exists:users',
+        ]);
+        if ($validator->fails()) {
+
+            $data_errors = $validator->errors();
+
+            $array = [];
+
+            foreach ($data_errors->messages() as $key => $error) {
+
+                $array[] = ['key' => $key, 'mess' => $error];
+            }
+
+            return $this->dataError(Message::ERROR, $array, StatusCode::BAD_REQUEST);
+
+        } else {
+            $data = $request->all();
+            $savePM = $this->phongMay->save($data);
+            try {
+                if ($savePM) {
+                    return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
+                } else {
+                    return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+                }
+            } catch (Exception $e) {
+                return $this->dataError(Message::SERVER_ERROR, false, StatusCode::SERVER_ERROR);
+            }
+        }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -70,7 +102,7 @@ class PhongMayController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -81,23 +113,54 @@ class PhongMayController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = \Validator::make($request->all(), [
+            'name' => 'required',
+            'mo_ta' => 'required',
+            'so_may' => 'required',
+
+        ]);
+        if ($validator->fails()) {
+
+            $data_errors = $validator->errors();
+
+            $array = [];
+
+            foreach ($data_errors->messages() as $key => $error) {
+
+                $array[] = ['key' => $key, 'mess' => $error];
+            }
+
+            return $this->dataError(Message::ERROR, $array, StatusCode::BAD_REQUEST);
+
+        } else {
+            $data = $request->all();
+            $updatePM = $this->phongMay->update($data,$id);
+            try {
+                if ($updatePM) {
+                    return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
+                } else {
+                    return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+                }
+            } catch (Exception $e) {
+                return $this->dataError(Message::SERVER_ERROR, false, StatusCode::SERVER_ERROR);
+            }
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        //
+
     }
 }
