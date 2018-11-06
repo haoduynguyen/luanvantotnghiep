@@ -148,7 +148,7 @@ class UserController extends Controller
         $validator = \Validator::make($request->all(), [
             //'first_name' => 'required',
             //'last_name' => 'required',
-            "email" => 'required',
+            //"email" => 'required',
             //'password' => '
             //|confirmed|min:6',
             //'phone' => 'required|numeric',
@@ -170,17 +170,12 @@ class UserController extends Controller
             return $this->dataError(Message::ERROR, $array, StatusCode::BAD_REQUEST);
 
         } else {
-            //$data = $this->user->getByColumn("user_id");
-            //$list = $this->user->getUser();
             $data = $request->all();
-            //dd();
-            $data['password'] = Hash::make($data['password']);
-            $updateUser = $this->user->update($data, $id);
             $list = $this->userProfile->getByColumn("user_id", $id);
             $updateProfile = $this->userProfile->update($data, $list->id);
             try {
-                if ($updateUser || $updateProfile) {
-                    return $this->dataSuccess(Message::SUCCESS, true, StatusCode::SUCCESS);
+                if ( $updateProfile) {
+                    return $this->dataSuccess(Message::SUCCESS, $updateProfile, StatusCode::SUCCESS);
                 } else {
                     return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
                 }

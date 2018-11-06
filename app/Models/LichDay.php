@@ -13,6 +13,7 @@ abstract class LichDayRel
     const THU = 'thu';
     const USER = 'user.profile';
     const TUAN = 'tuan';
+    const DANG_KY_NGHI = 'dangKyNghi';
 }
 class LichDay extends Model
 {
@@ -62,6 +63,10 @@ class LichDay extends Model
     {
         return $this->hasMany('App\Models\LichDayTuanRelation','lich_day_id');
     }
+    public function dangKyNghi()
+    {
+        return $this->hasOne('App\Models\DangKyNghi','lich_day_id');
+    }
     public function lichDayQuery()
     {
         return $this->with(LichDayRel::USER)
@@ -71,7 +76,8 @@ class LichDay extends Model
             ->with(LichDayRel::NHOM_LOP)
             ->with(LichDayRel::PHONG_MAY)
             ->with(LichDayRel::THU)
-            ->with(LichDayRel::TUAN);
+            ->with(LichDayRel::TUAN)
+            ->with(LichDayRel::DANG_KY_NGHI);
     }
     public $timestamps = true;
 }

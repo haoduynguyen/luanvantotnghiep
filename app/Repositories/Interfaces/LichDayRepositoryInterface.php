@@ -23,4 +23,12 @@ interface LichDayRepositoryInterface
     public function deleteMulti(array $data);
 
     public function getLichDay($param);
+
+    public function getLichDayFromGv($param, $user);
+
+    public function getListByMultiColumn(array $where, $columnsSelected = array('*'));
+
+    public function getByMultiColumn(array $where, $columnsSelected = array('*'));
+
+    public function getListDoubleLichDay($data , $param);
 } 

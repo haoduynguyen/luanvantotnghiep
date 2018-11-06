@@ -146,5 +146,4 @@ class LichDayTuanRelationRepository implements LichDayTuanRelationRepositoryInte
             return false;
         }
     }
-
 } 

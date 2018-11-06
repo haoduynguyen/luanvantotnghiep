@@ -11,6 +11,8 @@ class Tuan extends Model
     protected $fillable = [
         'id',
         'name',
+        'ngay_bat_dau',
+        'ngay_ket_thuc'
     ];
-    public $timestamps = true;
+    public $timestamps = false;
 }

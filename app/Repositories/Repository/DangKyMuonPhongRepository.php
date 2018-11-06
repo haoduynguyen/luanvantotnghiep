@@ -1,7 +1,8 @@
 <?php 
 namespace App\Repositories\Repository; 
  
-use App\Repositories\Interfaces\DangKyMuonPhongRepositoryInterface; 
+use App\Repositories\Interfaces\DangKyMuonPhongRepositoryInterface;
+use App\Models\DangKyMuonPhong;
  
 class DangKyMuonPhongRepository implements DangKyMuonPhongRepositoryInterface 
 { 

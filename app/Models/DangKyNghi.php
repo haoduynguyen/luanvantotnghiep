@@ -7,7 +7,7 @@ abstract class DangKyNghiRel
 {
     const GIANG_VIEN = 'GiangVien';
     const USER = 'User.profile';
-    const LICH_DAY = 'LichDay';
+    const LICH_DAY = 'LichDay.tuan';
 
 }
 class DangKyNghi extends Model

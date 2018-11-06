@@ -148,10 +148,33 @@ class LichDayRepository implements LichDayRepositoryInterface
     }
     public function getLichDay($param)
     {
-        $data  = $this->lichDay->lichDayQuery()->where('hk_id',$param['hk_id'])->where('phong_may_id',$param['phong_may_id'])->whereHas('tuan', function ($query) use($param)  {
-            $query->where('tuan_id', $param['tuan_id'])->where('status','x');
-        })->get();
+        $data = $this->lichDay->lichDayQuery()->where('hk_id', $param['hk_id'])->where('phong_may_id', $param['phong_may_id'])
+            ->whereHas('tuan', function ($query) use ($param) {
+                $query->where('tuan_id', $param['tuan_id'])->where('status', 'x');
+            })->get();
         return $data;
     }
-
+    public function getLichDayFromGv($param, $user)
+    {
+        $data = $this->lichDay->lichDayQuery()->where('hk_id', $param['hk_id'])->where('phong_may_id', $param['phong_may_id'])
+            ->whereHas('tuan', function ($query) use ($param) {
+                $query->where('tuan_id', $param['tuan_id'])->where('status', 'x');
+            })->whereHas('user', function ($query) use ($user) {
+                $query->where('id', $user->id);
+            })->get();
+        return $data;
+    }
+    public function getListDoubleLichDay($data,$param)
+    {
+        $lichDay = $this->lichDay->lichDayQuery()->where('thu_id', $data->thu_id)
+            ->where('nhom_lop_id',$data->nhom_lop_id)
+            ->where('phong_may_id',$data->phong_may_id)
+            ->where('mon_hoc_id',$data->mon_hoc_id)
+            ->where('user_id',$data->user_id)
+            ->where('hk_id',$data->hk_id)
+            ->whereHas('tuan',function ($query) use($param){
+                $query->where('tuan_id',$param['tuan_id'])->where('status', 'x');
+            })->get();
+        return $lichDay;
+    }
 } 
