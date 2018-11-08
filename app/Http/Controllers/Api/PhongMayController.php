@@ -168,6 +168,21 @@ class PhongMayController extends Controller
 
     }
 
+    public function getMoTaMay()
+    {
+        $data = $this->phongMayUserRelation->list();
+        try {
+            if ($data) {
+                return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
+            } else {
+                return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+            }
+
+        } catch (\Exception $e) {
+            return $this->dataError(Message::SERVER_ERROR, false, StatusCode::SERVER_ERROR);
+        }
+    }
+
     public function addMoTaMay(Request $request)
     {
         $validator = \Validator::make($request->all(), [
@@ -199,6 +214,47 @@ class PhongMayController extends Controller
             try {
                 if ($addMoTa) {
                     return $this->dataSuccess(Message::SUCCESS, true, StatusCode::CREATED);
+                } else {
+                    return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+                }
+
+            } catch (\Exception $e) {
+                return $this->dataError(Message::SERVER_ERROR, false, StatusCode::SERVER_ERROR);
+            }
+        }
+    }
+
+    public function updateMoTaMay(Request $request, $id)
+    {
+        $validator = \Validator::make($request->all(), [
+            'phong_may_id' => 'required',
+            'mota_ktv' => 'required'
+
+        ]);
+        if ($validator->fails()) {
+
+            $data_errors = $validator->errors();
+
+            $array = [];
+
+            foreach ($data_errors->messages() as $key => $error) {
+
+                $array[] = ['key' => $key, 'mess' => $error];
+            }
+
+            return $this->dataError(Message::ERROR, $array, StatusCode::BAD_REQUEST);
+
+        } else {
+
+            $tokenHeader = $request->header('Authorization');
+            $tokenUser = explode(' ', $tokenHeader, 2)[1];
+            $user = JWTAuth::toUser($tokenUser);
+            $data = $request->all();
+            $data['ktv_id'] = $user->id;
+            $updateMoTa = $this->phongMayUserRelation->update($data, $id);
+            try {
+                if ($updateMoTa) {
+                    return $this->dataSuccess(Message::SUCCESS, true, StatusCode::SUCCESS);
                 } else {
                     return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
                 }

@@ -144,6 +144,11 @@ class PhongMayUserRelationRepository implements PhongMayUserRelationRepositoryIn
             else{
                 return false;
             }
-        } 
-         
+        }
+
+        public function list()
+        {
+            $data = $this->phongMayUserRelation->PhongMayUserRelationQuery()->get();
+            return $data;
+        }
 } 
