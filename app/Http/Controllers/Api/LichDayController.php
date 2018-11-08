@@ -20,6 +20,7 @@ use App\Repositories\Interfaces\UserRoleRelationRepositoryInterface;
 use Excel;
 use Hash;
 use Illuminate\Http\Request;
+use JWTAuth;
 
 class LichDayController extends Controller
 {
@@ -71,7 +72,31 @@ class LichDayController extends Controller
     public function index(Request $request)
     {
         $data = $this->lichDay->getLichDay($request->all());
-        return $data;
+        try {
+            if ($data) {
+                return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
+            }
+            return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+        } catch (\Exception $e) {
+            return $this->dataError(Message::SERVER_ERROR, [], StatusCode::SERVER_ERROR);
+        }
+    }
+
+    public function getLichDayFromGv(Request $request)
+    {
+        $tokenHeader = $request->header('Authorization');
+        $tokenUser = explode(' ', $tokenHeader, 2)[1];
+        $user = JWTAuth::toUser($tokenUser);
+        $data = $this->lichDay->getLichDayFromGv($request->all(), $user);
+        try {
+            if (!empty($data)) {
+                return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
+            }
+            return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+        } catch (\Exception $e) {
+            return $this->dataError(Message::SERVER_ERROR, [], StatusCode::SERVER_ERROR);
+        }
+
     }
 
     /**
@@ -158,29 +183,47 @@ class LichDayController extends Controller
             return $this->dataError('Học kỳ đã bắt đầu học không thể thay đổi', false, StatusCode::BAD_REQUEST);
         } elseif ($date > $hocKy->ngay_ket_thuc && !empty($lichDayExists)) {
             return $this->dataError('Học kỳ đã kết thúc không thể thay đổi', false, StatusCode::BAD_REQUEST);
-        }
-        elseif ($date < $hocKy->ngay_bat_dau && !empty($lichDayExists) && $request->tiep_tuc != 1) {
+        } elseif ($date < $hocKy->ngay_bat_dau && !empty($lichDayExists) && $request->tiep_tuc != 1) {
             return response()->json(['warn' => 'Học kỳ này đã được import lịch. Nếu nhấn Yes dữ liệu cũ của học kỳ này sẽ được thay thế bằng dữ liệu mới'], 200);
         }
         if ($request->tiep_tuc == 1) {
-            $lichDays = $this->lichDay->getListByColumn('hk_id',$lichDay['hk_id'])->toArray();
-            foreach ($lichDays as $item)
-            {
-                $lichDayTuanID = $this->lichDayTuan->getListByColumn('lich_day_id',$item['id'])->toArray();
-                if($lichDayTuanID)
-                {
-                    $data['list_id'] = array_pluck($lichDayTuanID,'id');
-                     $this->lichDayTuan->deleteMulti($data);
+            $lichDays = $this->lichDay->getListByColumn('hk_id', $lichDay['hk_id'])->toArray();
+            foreach ($lichDays as $item) {
+                $lichDayTuanID = $this->lichDayTuan->getListByColumn('lich_day_id', $item['id'])->toArray();
+                if ($lichDayTuanID) {
+                    $data['list_id'] = array_pluck($lichDayTuanID, 'id');
+                    $this->lichDayTuan->deleteMulti($data);
                 }
             }
-            $data['list_id'] = array_pluck($lichDays,'id');
+            $data['list_id'] = array_pluck($lichDays, 'id');
             $this->lichDay->deleteMulti($data);
         }
         if ($request->hasFile('file_import')) {
             $path = $request->file('file_import')->getRealPath();
             $data = \Excel::load($path, function ($reader) {
             })->get();
+            $totalData = count($data);
             if ($data) {
+                foreach ($data as $item) {
+                    $findNgayBatDau = (explode('-', $item['f_tghoc']));
+                    $ngayBatDau[] = $this->editTypeDate($findNgayBatDau['0']);
+                }
+                //Tìm ngày thấp nhất trong excel
+                for ($i = 0; $i < $totalData - 1; $i++) {
+                    $min = $ngayBatDau[$i];
+                    $temp = $ngayBatDau[$i + 1];
+                    if ($min > $temp) {
+                        $minDate = $temp;
+                    }
+                }
+                $tuan = $this->tuan->all();
+                $i = 0;
+                foreach ($tuan as $itemTuan) {
+                    $ngay_bat_dau = date('Y-m-d', strtotime($minDate . '+' . $i . 'days'));
+                    $ngay_ket_thuc = date('Y-m-d', strtotime($ngay_bat_dau . ' + 6 days'));
+                    $i += 7;
+                    $this->tuan->update(['ngay_bat_dau' => $ngay_bat_dau, 'ngay_ket_thuc' => $ngay_ket_thuc], $itemTuan->id);
+                }
                 foreach ($data as $item) {
                     $thoigianhoc = explode('-', $item->f_lichin);
                     $monHocExists = $this->monHoc->getByColumn('ma_mon_hoc', $item->f_mamh);
@@ -231,9 +274,8 @@ class LichDayController extends Controller
                     if ($user) {
                         $lichDay['user_id'] = $user->id;
                     } else {
-                        $user = $this->user->save(['email' => $userEmail, 'name' => $item->f_tencbv, 'password' => Hash::make($item->f_manv)]);
+                        $user = $this->user->save(['email' => $userEmail, 'role_id' => 1, 'password' => Hash::make($item->f_manv)]);
                         $this->userProfile->save(['first_name' => $item->f_holotcbv, 'last_name' => $item->f_tencbv, 'user_id' => $user->id, 'ma_nhan_vien' => $item->f_manv]);
-                        $this->userRole->save(['user_id'=>$user->id,'role_id'=>1]);
                         $lichDay['user_id'] = $user->id;
                     }
                     switch ($item->f_tiethoc) {
@@ -242,8 +284,8 @@ class LichDayController extends Controller
                                 $lichDay['ca_id'] = $i;
                                 $saveLichDay = $this->lichDay->save($lichDay);
                                 if ($saveLichDay) {
-                                    for ($i = 1; $i <= 25; $i++) {
-                                        $t = 't' . $i;
+                                    for ($j = 1; $j <= 25; $j++) {
+                                        $t = 't' . $j;
                                         $tuan = $this->tuan->getByColumn('name', $t);
                                         if ($item[$t] == "") {
                                             $item[$t] = '0';
@@ -259,13 +301,13 @@ class LichDayController extends Controller
                                     $lichDay['ca_id'] = $i;
                                     $saveLichDay = $this->lichDay->save($lichDay);
                                     if ($saveLichDay) {
-                                        for ($i = 1; $i <= 25; $i++) {
-                                            $t = 't' . $i;
+                                        for ($j = 1; $j <= 25; $j++) {
+                                            $t = 't' . $j;
                                             $tuan = $this->tuan->getByColumn('name', $t);
                                             if ($item[$t] == "") {
                                                 $item[$t] = '0';
                                             }
-                                            $this->lichDayTuan->save(['tuan_id' => $tuan->id, 'lich_day_id' => $saveLichDay->id, 'status' => $item[$t]]);
+                                                $this->lichDayTuan->save(['tuan_id' => $tuan->id, 'lich_day_id' => $saveLichDay->id, 'status' => $item[$t]]);
                                         }
                                     }
                                 }
@@ -280,8 +322,8 @@ class LichDayController extends Controller
                                     $lichDay['ca_id'] = $ca->id;
                                     $saveLichDay = $this->lichDay->save($lichDay);
                                     if ($saveLichDay) {
-                                        for ($i = 1; $i <= 25; $i++) {
-                                            $t = 't' . $i;
+                                        for ($j = 1; $j <= 25; $j++) {
+                                            $t = 't' . $j;
                                             $tuan = $this->tuan->getByColumn('name', $t);
                                             if ($item[$t] == "") {
                                                 $item[$t] = '0';

@@ -122,7 +122,17 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
+        $data  = $this->user->getUserFromID($id);
+        try {
+            if ($data) {
+                return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
+            } else {
+                return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+            }
+        } catch (Exception $e) {
+            return $this->dataError(Message::SERVER_ERROR, $e, StatusCode::SERVER_ERROR);
+        }
+
     }
 
     /**
@@ -138,7 +148,7 @@ class UserController extends Controller
         $validator = \Validator::make($request->all(), [
             //'first_name' => 'required',
             //'last_name' => 'required',
-            "email" => 'required',
+            //"email" => 'required',
             //'password' => '
             //|confirmed|min:6',
             //'phone' => 'required|numeric',
@@ -161,14 +171,11 @@ class UserController extends Controller
 
         } else {
             $data = $request->all();
-            //dd();
-            $data['password'] = Hash::make($data['password']);
-            $updateUser = $this->user->update($data, $id);
             $list = $this->userProfile->getByColumn("user_id", $id);
             $updateProfile = $this->userProfile->update($data, $list->id);
             try {
-                if ($updateUser || $updateProfile) {
-                    return $this->dataSuccess(Message::SUCCESS, true, StatusCode::SUCCESS);
+                if ( $updateProfile) {
+                    return $this->dataSuccess(Message::SUCCESS, $updateProfile, StatusCode::SUCCESS);
                 } else {
                     return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
                 }

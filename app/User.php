@@ -42,7 +42,7 @@ class User extends Authenticatable implements JWTSubject
     //belongsToMany la quan he n-n
     public function role()
     {
-        return $this->belongsToMany('App\Models\Role', 'api_user_role_relation', 'user_id', 'role_id');
+        return $this->belongsTo('App\Models\Role', 'role_id');
     }
 
     //hasOne la quan he 1-1

@@ -33,13 +33,24 @@ Route::resource('role', 'Api\RoleController');
 Route::resource('ca', 'Api\CaController');
 Route::resource('thu', 'Api\ThuController');
 Route::resource('hoc-ky', 'Api\HocKyController');
-Route::resource('dang-ky-nghi', 'Api\DangKyNghiController');
 Route::resource('tuan', 'Api\TuanController');
 Route::resource('phong-may', 'Api\PhongMayController');
 
+Route::get('get-lich', 'Api\LichDayController@index');
+
 //Import Lich Day
-Route::post('import-excel','Api\LichDayController@import');
-Route::get('get-lich','Api\LichDayController@index');
+Route::post('import-excel', 'Api\LichDayController@import');
+
+Route::group(['middleware' => ['jwt.auth']], function () {
+    Route::get('get-lich-gv', 'Api\LichDayController@getLichDayFromGv');
+    Route::resource('mon-hoc', 'Api\MonHocController');
+    Route::resource('dk-muon-phong', 'Api\MuonPhongController');
+    Route::resource('dang-ky-nghi', 'Api\DangKyNghiController');
+    Route::group(['middleware' => 'cors'], function () {
+
+
+    });
+});
 // Route::group([
 
 //     'middleware' => 'api',

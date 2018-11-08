@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-
+use App\User;
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -11,13 +11,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-
-        for ($i = 1; $i <= 25; $i++) {
-            \Illuminate\Support\Facades\DB::table('api_tuan')->insert([
-                'name' => 't' . $i,
-                'description'=>'Tuần ' .$i,
+        for ($i = 1;$i<=25;$i++)
+        {
+            \Illuminate\Support\Facades\DB::table('users')->insert([
+                'role_id' => 1
             ]);
         }
-
     }
 }

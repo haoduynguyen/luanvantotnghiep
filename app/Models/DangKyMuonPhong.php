@@ -14,6 +14,9 @@ class DangKyMuonPhong extends Model
         'mon_hoc_id',
         'ca_id',
         'status',
+        'thu_id',
+        'user_id',
+        'hk_id'
     ];
     public $timestamps = true;
 }
