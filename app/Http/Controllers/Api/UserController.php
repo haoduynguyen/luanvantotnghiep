@@ -160,8 +160,6 @@ class UserController extends Controller
             return $this->dataError(Message::ERROR, $array, StatusCode::BAD_REQUEST);
 
         } else {
-            //$data = $this->user->getByColumn("user_id");
-            //$list = $this->user->getUser();
             $data = $request->all();
             //dd();
             $data['password'] = Hash::make($data['password']);
