@@ -62,6 +62,11 @@ class RegisterRepositories extends ServiceProvider
  
         ); 
         $this->app->bind( 
+           'App\Repositories\Interfaces\TuanMuonPhongRelationRepositoryInterface', 
+           'App\Repositories\Repository\TuanMuonPhongRelationRepository' 
+ 
+        ); 
+        $this->app->bind( 
            'App\Repositories\Interfaces\TuanRepositoryInterface', 
            'App\Repositories\Repository\TuanRepository' 
  
