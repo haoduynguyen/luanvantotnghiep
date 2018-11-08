@@ -36,6 +36,8 @@ Route::resource('hoc-ky', 'Api\HocKyController');
 Route::resource('tuan', 'Api\TuanController');
 Route::resource('phong-may', 'Api\PhongMayController');
 
+
+
 Route::get('get-lich', 'Api\LichDayController@index');
 
 //Import Lich Day
@@ -46,10 +48,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::resource('mon-hoc', 'Api\MonHocController');
     Route::resource('dk-muon-phong', 'Api\MuonPhongController');
     Route::resource('dang-ky-nghi', 'Api\DangKyNghiController');
-    Route::group(['middleware' => 'cors'], function () {
-
-
-    });
+    Route::post('add-mo-ta','Api\PhongMayController@addMoTaMay');
 });
 // Route::group([
 
