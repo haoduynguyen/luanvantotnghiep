@@ -122,7 +122,7 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $data  = $this->user->getUserFromID($id);
+        $data = $this->user->getUserFromID($id);
         try {
             if ($data) {
                 return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
@@ -142,6 +142,48 @@ class UserController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
+
+    public function changePassword(Request $request, $id)
+    {
+        $validator = \Validator::make($request->all(), [
+            'old_password' => 'required',
+            'new_password' => 'required|confirmed|min:6',
+        ]);
+
+        if ($validator->fails()) {
+
+            $data_errors = $validator->errors();
+
+            $array = [];
+
+            foreach ($data_errors->messages() as $key => $error) {
+
+                $array[] = ['key' => $key, 'mess' => $error];
+            }
+
+            return $this->dataError(Message::ERROR, $array, StatusCode::BAD_REQUEST);
+
+        } else {
+            $data = $this->user->get($id);
+            //dd(Hash::make($request->old_password));
+            try {
+                if (Hash::check($request->get("old_password"),$data->password)) {
+                    $newPassword = $this->user->update(['password' => Hash::make($request->new_password)], $id);
+                    if ($newPassword) {
+                        return $this->dataSuccess(Message::SUCCESS, true, StatusCode::SUCCESS);
+                    } else {
+                        return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+                    }
+                } else {
+                    return $this->dataError("Mat Khau Khong Dung", false, StatusCode::BAD_REQUEST);
+                }
+
+            } catch (\Exception $e) {
+                return $this->dataError(Message::SERVER_ERROR, $e->getMessage(), StatusCode::SERVER_ERROR);
+            }
+        }
+    }
+
     public function update(Request $request, $id)
     {
         //dd($request->all());
@@ -174,7 +216,7 @@ class UserController extends Controller
             $list = $this->userProfile->getByColumn("user_id", $id);
             $updateProfile = $this->userProfile->update($data, $list->id);
             try {
-                if ( $updateProfile) {
+                if ($updateProfile) {
                     return $this->dataSuccess(Message::SUCCESS, $updateProfile, StatusCode::SUCCESS);
                 } else {
                     return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);

@@ -12,5 +12,5 @@ interface PhongMayUserRelationRepositoryInterface
  public function getListByColumn($column,$value,$columnsSelected = array('*')) ;  
  public function delete($id);  
  public function deleteMulti(array $data);
- public function list();
+ public function list($user);
 } 

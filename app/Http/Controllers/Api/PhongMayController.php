@@ -168,9 +168,14 @@ class PhongMayController extends Controller
 
     }
 
-    public function getMoTaMay()
+    public function getMoTaMay(Request $request)
     {
-        $data = $this->phongMayUserRelation->list();
+        $tokenHeader = $request->header('Authorization');
+        $tokenUser = explode(' ', $tokenHeader, 2)[1];
+        $user = JWTAuth::toUser($tokenUser);
+
+        $data = $this->phongMayUserRelation->list($user);
+
         try {
             if ($data) {
                 return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
@@ -210,9 +215,9 @@ class PhongMayController extends Controller
             $user = JWTAuth::toUser($tokenUser);
             $data = $request->all();
             $data['gv_id'] = $user->id;
-            $addMoTa = $this->phongMayUserRelation->save($data);
+            $saveMoTa = $this->phongMayUserRelation->save($data);
             try {
-                if ($addMoTa) {
+                if ($saveMoTa) {
                     return $this->dataSuccess(Message::SUCCESS, true, StatusCode::CREATED);
                 } else {
                     return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);

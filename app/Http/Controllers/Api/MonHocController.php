@@ -67,9 +67,9 @@ class MonHocController extends Controller
 
         } else {
             $data = $request->all();
-            $addMonHoc = $this->monHoc->save($data);
+            $saveMonHoc = $this->monHoc->save($data);
             try {
-                if ($addMonHoc) {
+                if ($saveMonHoc) {
                     return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
                 } else {
                     return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
