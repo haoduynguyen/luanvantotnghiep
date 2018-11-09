@@ -4,6 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+abstract class PhongMayUserRelationRel
+{
+    const PHONG_MAY = 'phongMay';
+    const GIANG_VIEN = 'giangVien';
+    const KY_THUAT_VIEN = 'kyThuatVien';
+}
+
 class PhongMayUserRelation extends Model
 {
     protected $table = "api_phong_may_user_relation";
@@ -16,17 +23,28 @@ class PhongMayUserRelation extends Model
         'mota_gv',
         'mota_ktv',
     ];
-//    public function phongMay()
-//    {
-//        return $this->hasMany('App\Models\PhongMay','phong_may_id');
-//    }
-//    public function giangVien()
-//    {
-//        return $this->hasMany('App\User','gv_id');
-//    }
-//    public function ktThuatVien()
-//    {
-//        return $this->hasMany('App\User','ktv_id');
-//    }
+
+    public function phongMay()
+    {
+        return $this->belongsTo('App\Models\PhongMay', 'phong_may_id');
+    }
+
+    public function giangVien()
+    {
+        return $this->belongsTo('App\User', 'gv_id');
+    }
+
+    public function kyThuatVien()
+    {
+        return $this->belongsTo('App\User', 'ktv_id');
+    }
+
+    public function PhongMayUserRelationQuery()
+    {
+        return $this->with(PhongMayUserRelationRel::GIANG_VIEN)
+            ->with(PhongMayUserRelationRel::KY_THUAT_VIEN)
+            ->with(PhongMayUserRelationRel::PHONG_MAY);
+    }
+
     public $timestamps = true;
 }

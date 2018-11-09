@@ -1,15 +1,18 @@
 <?php
 
 namespace App\Http\Controllers\Api;
+
+
 use App\Constants\Message;
 use App\Constants\StatusCode;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\MonHocRepositoryInterface;
+use Illuminate\Http\Request;
 
 class MonHocController extends Controller
 {
     private $monHoc;
+
     public function __construct(MonHocRepositoryInterface $monHocRepository)
     {
         $this->monHoc = $monHocRepository;
@@ -53,56 +56,93 @@ class MonHocController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        //
+        $validator = \Validator::make($request->all(), [
+            'ma_mon_hoc' => 'required',
+            'name' => 'required',
+            'ngay_bat_dau' => 'required',
+            'ngay_ket_thuc' => 'required',
+            //'gv_id' => 'required|exists:users',
+        ]);
+        if ($validator->fails()) {
+
+            $data_errors = $validator->errors();
+
+            $array = [];
+
+            foreach ($data_errors->messages() as $key => $error) {
+
+                $array[] = ['key' => $key, 'mess' => $error];
+            }
+
+            return $this->dataError(Message::ERROR, $array, StatusCode::BAD_REQUEST);
+
+        } else {
+            $data = $request->all();
+            $saveMonHoc = $this->monHoc->save($data);
+            try {
+                if ($saveMonHoc) {
+                    return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
+                } else {
+                    return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+                }
+            } catch (Exception $e) {
+                return $this->dataError(Message::SERVER_ERROR, false, StatusCode::SERVER_ERROR);
+            }
+        }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+/**
+ * Display the specified resource.
+ *
+ * @param  int $id
+ * @return \Illuminate\Http\Response
+ */
+public
+function show($id)
+{
+    //
+}
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+/**
+ * Show the form for editing the specified resource.
+ *
+ * @param  int $id
+ * @return \Illuminate\Http\Response
+ */
+public
+function edit($id)
+{
+    //
+}
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+/**
+ * Update the specified resource in storage.
+ *
+ * @param  \Illuminate\Http\Request $request
+ * @param  int $id
+ * @return \Illuminate\Http\Response
+ */
+public
+function update(Request $request, $id)
+{
+    //
+}
+
+/**
+ * Remove the specified resource from storage.
+ *
+ * @param  int $id
+ * @return \Illuminate\Http\Response
+ */
+public
+function destroy($id)
+{
+    //
+}
 }

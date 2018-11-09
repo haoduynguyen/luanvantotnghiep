@@ -6,15 +6,19 @@ use App\Constants\Message;
 use App\Constants\StatusCode;
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\DangKyMuonPhongRepositoryInterface;
+use App\Repositories\Interfaces\TuanMuonPhongRelationRepositoryInterface;
 use Illuminate\Http\Request;
+use JWTAuth;
 
 class MuonPhongController extends Controller
 {
     private $dkMuonPhong;
+    private $tuanMuonPhong;
 
-    public function __construct(DangKyMuonPhongRepositoryInterface $dkMuonPhong)
+    public function __construct(DangKyMuonPhongRepositoryInterface $dkMuonPhong, TuanMuonPhongRelationRepositoryInterface $tuanMuonPhongRelationRepository)
     {
         $this->dkMuonPhong = $dkMuonPhong;
+        $this->tuanMuonPhong = $tuanMuonPhongRelationRepository;
     }
 
     /**
@@ -22,9 +26,19 @@ class MuonPhongController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $data = $this->dkMuonPhong->getDataMuonPhong($request->all());
+
+        try {
+            if ($data) {
+                return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
+            } else {
+                return $this->dataError(Message::ERROR, false, StatusCode::NOT_FOUND);
+            }
+        } catch (\Exception $e) {
+            return $this->dataError(Message::SERVER_ERROR, false, StatusCode::SERVER_ERROR);
+        }
     }
 
     /**
@@ -45,12 +59,18 @@ class MuonPhongController extends Controller
      */
     public function store(Request $request)
     {
+        $tokenHeader = $request->header('Authorization');
+        $tokenUser = explode(' ', $tokenHeader, 2)[1];
+        $user = JWTAuth::toUser($tokenUser);
         $data = $request->all();
         $data['status'] = 1;
+        $data['user_id'] = $user->id;
         $dkMuonPhong = $this->dkMuonPhong->save($data);
+        $this->tuanMuonPhong->save(['tuan_id' => $request->tuan_id, 'muon_phong_id' => $dkMuonPhong->id, 'status' => 'x']);
+        $dataSubmit = $this->dkMuonPhong->getDataSubmit($dkMuonPhong->id);
         try {
-            if ($dkMuonPhong) {
-                return $this->dataSuccess(Message::SUCCESS, $dkMuonPhong, StatusCode::CREATED);
+            if ($dataSubmit) {
+                return $this->dataSuccess(Message::SUCCESS, $dataSubmit, StatusCode::CREATED);
             } else {
                 return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
             }

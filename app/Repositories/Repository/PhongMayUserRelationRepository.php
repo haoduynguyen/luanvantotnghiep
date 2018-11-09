@@ -144,6 +144,16 @@ class PhongMayUserRelationRepository implements PhongMayUserRelationRepositoryIn
             else{
                 return false;
             }
-        } 
-         
+        }
+
+        public function list($user)
+        {
+            if($user->role_id == 1){
+                $data =  $this->phongMayUserRelation->PhongMayUserRelationQuery()->where('gv_id',$user->id)->get();
+            }
+            else {
+                $data = $this->phongMayUserRelation->PhongMayUserRelationQuery()->get();
+            }
+            return $data;
+        }
 } 

@@ -33,6 +33,7 @@ class AuthController extends Controller
         if ($token = $this->guard()->attempt($credentials)) {
             $user = auth()->user();
             $user['token'] = $token;
+            $user['profile'] = $user->profile;
             return $this->dataSuccess(Message::SUCCESS, $user, StatusCode::SUCCESS);
         }
 

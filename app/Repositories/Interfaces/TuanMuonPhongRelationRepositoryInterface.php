@@ -1,7 +1,7 @@
 <?php 
 namespace App\Repositories\Interfaces; 
  
-interface PhongMayUserRelationRepositoryInterface 
+interface TuanMuonPhongRelationRepositoryInterface 
 { 
  public function get($id,$columns = array('*'));  
  public function all($columns = array('*'));  
@@ -11,6 +11,5 @@ interface PhongMayUserRelationRepositoryInterface
  public function getByColumn($column,$value) ;  
  public function getListByColumn($column,$value,$columnsSelected = array('*')) ;  
  public function delete($id);  
- public function deleteMulti(array $data);
- public function list($user);
+ public function deleteMulti(array $data);  
 } 

@@ -35,6 +35,8 @@ Route::resource('thu', 'Api\ThuController');
 Route::resource('hoc-ky', 'Api\HocKyController');
 Route::resource('tuan', 'Api\TuanController');
 Route::resource('phong-may', 'Api\PhongMayController');
+Route::put('change-password/{id}', 'Api\UserController@changePassword');
+
 
 
 
@@ -49,6 +51,9 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::resource('dk-muon-phong', 'Api\MuonPhongController');
     Route::resource('dang-ky-nghi', 'Api\DangKyNghiController');
     Route::post('add-mo-ta','Api\PhongMayController@addMoTaMay');
+    Route::get('list-mo-ta','Api\PhongMayController@getMoTaMay');
+    Route::put('update-mo-ta/{id}','Api\PhongMayController@updateMoTaMay');
+
 });
 // Route::group([
 

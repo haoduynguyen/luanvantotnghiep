@@ -2,22 +2,22 @@
 
 namespace App\Repositories\Repository;
 
-use App\Models\DangKyMuonPhong;
-use App\Repositories\Interfaces\DangKyMuonPhongRepositoryInterface;
+use App\Models\TuanMuonPhongRelation;
+use App\Repositories\Interfaces\TuanMuonPhongRelationRepositoryInterface;
 
-class DangKyMuonPhongRepository implements DangKyMuonPhongRepositoryInterface
+class TuanMuonPhongRelationRepository implements TuanMuonPhongRelationRepositoryInterface
 {
-    private $dangKyMuonPhong;
+    private $tuanMuonPhongRelation;
 
     public function __construct()
     {
-        $this->dangKyMuonPhong = new DangKyMuonPhong();
+        $this->tuanMuonPhongRelation = new TuanMuonPhongRelation();
     }
 
 
     public function get($id, $columns = array('*'))
     {
-        $data = $this->dangKyMuonPhong->find($id, $columns);
+        $data = $this->tuanMuonPhongRelation->find($id, $columns);
         if ($data) {
             return $data;
         }
@@ -27,25 +27,25 @@ class DangKyMuonPhongRepository implements DangKyMuonPhongRepositoryInterface
 
     public function all($columns = array('*'))
     {
-        $listData = $this->dangKyMuonPhong->get($columns);
+        $listData = $this->tuanMuonPhongRelation->get($columns);
         return $listData;
     }
 
     public function paginate($perPage = 15, $columns = array('*'))
     {
-        $listData = $this->dangKyMuonPhong->paginate($perPage, $columns);
+        $listData = $this->tuanMuonPhongRelation->paginate($perPage, $columns);
         return $listData;
     }
 
     public function save(array $data)
     {
-        return $this->dangKyMuonPhong->create($data);
+        return $this->tuanMuonPhongRelation->create($data);
 
     }
 
     public function update(array $data, $id)
     {
-        $dep = $this->dangKyMuonPhong->find($id);
+        $dep = $this->tuanMuonPhongRelation->find($id);
         if ($dep) {
             foreach ($dep->getFillable() as $field) {
                 if (array_key_exists($field, $data)) {
@@ -65,7 +65,7 @@ class DangKyMuonPhongRepository implements DangKyMuonPhongRepositoryInterface
     public function getByColumn($column, $value, $columnsSelected = array('*'))
     {
 
-        $data = $this->dangKyMuonPhong->where($column, $value)->first();
+        $data = $this->tuanMuonPhongRelation->where($column, $value)->first();
         if ($data) {
             return $data;
         }
@@ -77,7 +77,7 @@ class DangKyMuonPhongRepository implements DangKyMuonPhongRepositoryInterface
     public function getByMultiColumn(array $where, $columnsSelected = array('*'))
     {
 
-        $data = $this->dangKyMuonPhong;
+        $data = $this->tuanMuonPhongRelation;
 
         foreach ($where as $key => $value) {
             $data = $data->where($key, $value);
@@ -97,7 +97,7 @@ class DangKyMuonPhongRepository implements DangKyMuonPhongRepositoryInterface
     public function getListByColumn($column, $value, $columnsSelected = array('*'))
     {
 
-        $data = $this->dangKyMuonPhong->where($column, $value)->get();
+        $data = $this->tuanMuonPhongRelation->where($column, $value)->get();
         if ($data) {
             return $data;
         }
@@ -109,7 +109,7 @@ class DangKyMuonPhongRepository implements DangKyMuonPhongRepositoryInterface
     public function getListByMultiColumn(array $where, $columnsSelected = array('*'))
     {
 
-        $data = $this->dangKyMuonPhong;
+        $data = $this->tuanMuonPhongRelation;
 
         foreach ($where as $key => $value) {
             $data = $data->where($key, $value);
@@ -127,7 +127,7 @@ class DangKyMuonPhongRepository implements DangKyMuonPhongRepositoryInterface
 
     public function delete($id)
     {
-        $del = $this->dangKyMuonPhong->find($id);
+        $del = $this->tuanMuonPhongRelation->find($id);
         if ($del !== null) {
             $del->delete();
             return true;
@@ -138,7 +138,7 @@ class DangKyMuonPhongRepository implements DangKyMuonPhongRepositoryInterface
 
     public function deleteMulti(array $data)
     {
-        $del = $this->dangKyMuonPhong->whereIn("id", $data["list_id"])->delete();
+        $del = $this->tuanMuonPhongRelation->whereIn("id", $data["list_id"])->delete();
         if ($del) {
 
             return true;
@@ -146,17 +146,5 @@ class DangKyMuonPhongRepository implements DangKyMuonPhongRepositoryInterface
             return false;
         }
     }
-    public function getDataSubmit($id)
-    {
-        $data = $this->dangKyMuonPhong->dkMuonPhongQuery()->find($id);
-        return $data;
-    }
-    public function getDataMuonPhong($param)
-    {
-        $data = $this->dangKyMuonPhong->dkMuonPhongQuery()->where('hk_id', $param['hk_id'])->where('phong_may_id', $param['phong_may_id'])
-            ->whereHas('tuan', function ($query) use ($param) {
-                $query->where('tuan_id', $param['tuan_id'])->where('status', 'x');
-            })->get();
-        return $data;
-    }
+
 } 
