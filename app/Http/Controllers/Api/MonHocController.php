@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-
+use App\Constants\Message;
+use App\Constants\StatusCode;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\MonHocRepositoryInterface;
@@ -21,7 +22,22 @@ class MonHocController extends Controller
      */
     public function index()
     {
-        $this->monHoc->all();
+        $data = $this->monHoc->all();
+
+        try{
+            if($data)
+            {
+                return $this->dataSuccess(Message::SUCCESS, $data,StatusCode::SUCCESS);
+            }
+            else
+            {
+                return $this->dataError(Message::ERROR,false, StatusCode::BAD_REQUEST);
+            }
+        }
+        catch (Exception $e)
+        {
+            return $this->dataSuccess(Message::SERVER_ERROR, false,StatusCode::SERVER_ERROR);
+        }
     }
 
     /**

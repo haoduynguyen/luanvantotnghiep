@@ -171,6 +171,7 @@ class UserController extends Controller
 
         } else {
             $data = $request->all();
+            $user = $this->user->update($data,$id);
             $list = $this->userProfile->getByColumn("user_id", $id);
             $updateProfile = $this->userProfile->update($data, $list->id);
             try {
