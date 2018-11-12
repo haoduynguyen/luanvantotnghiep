@@ -38,7 +38,8 @@ Route::resource('phong-may', 'Api\PhongMayController');
 Route::put('change-password/{id}', 'Api\UserController@changePassword');
 
 
-
+Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
+Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 
 Route::get('get-lich', 'Api\LichDayController@index');
 
