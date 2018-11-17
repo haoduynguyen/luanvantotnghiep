@@ -191,6 +191,6 @@ class DangKyNghiController extends Controller
         public
         function destroy($id)
         {
-            //
+
         }
     }

@@ -36,8 +36,8 @@ Route::resource('hoc-ky', 'Api\HocKyController');
 Route::resource('tuan', 'Api\TuanController');
 Route::resource('phong-may', 'Api\PhongMayController');
 Route::put('change-password/{id}', 'Api\UserController@changePassword');
-
-
+Route::get('show-mo-ta-id/{id}', 'Api\PhongMayController@showMoTaID');
+Route::delete('delete-id/{id}', 'Api\PhongMayController@deleteID');
 
 
 Route::get('get-lich', 'Api\LichDayController@index');
@@ -50,9 +50,10 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::resource('mon-hoc', 'Api\MonHocController');
     Route::resource('dk-muon-phong', 'Api\MuonPhongController');
     Route::resource('dang-ky-nghi', 'Api\DangKyNghiController');
-    Route::post('add-mo-ta','Api\PhongMayController@addMoTaMay');
-    Route::get('list-mo-ta','Api\PhongMayController@getMoTaMay');
-    Route::put('update-mo-ta/{id}','Api\PhongMayController@updateMoTaMay');
+    Route::post('add-mo-ta', 'Api\PhongMayController@addMoTaMay');
+    Route::get('list-mo-ta', 'Api\PhongMayController@getMoTaMay');
+    Route::put('ktv-update-mo-ta/{id}', 'Api\PhongMayController@ktvUpdateMoTa');
+    Route::put('gv-update-mo-ta/{id}', 'Api\PhongMayController@gvUpdateMoTa');
 
 });
 // Route::group([
