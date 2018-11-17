@@ -20,14 +20,17 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 //User
-
+//social
+//Route::get('/redirect', 'Auth\LoginController@redirectToProvider');
+//Route::get('/callback/google', 'Auth\LoginController@handleProviderCallback');
 //Route::get('user', 'Api\UserController@index');
 //Route::post('user', 'Api\UserController@store');
 Route::resource('user', 'Api\UserController');
 
 //Auth
 Route::post('login', 'Api\AuthController@login');
-
+Route::get('get-user', 'Api\AuthController@getUser');
+Route::post('google', 'Api\CaController@google');
 //Role
 Route::resource('role', 'Api\RoleController');
 Route::resource('ca', 'Api\CaController');
@@ -36,9 +39,14 @@ Route::resource('hoc-ky', 'Api\HocKyController');
 Route::resource('tuan', 'Api\TuanController');
 Route::resource('phong-may', 'Api\PhongMayController');
 Route::put('change-password/{id}', 'Api\UserController@changePassword');
+
 Route::get('show-mo-ta-id/{id}', 'Api\PhongMayController@showMoTaID');
 Route::delete('delete-id/{id}', 'Api\PhongMayController@deleteID');
 
+
+
+Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
+Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('password.reset');
 
 Route::get('get-lich', 'Api\LichDayController@index');
 
@@ -54,6 +62,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::get('list-mo-ta', 'Api\PhongMayController@getMoTaMay');
     Route::put('ktv-update-mo-ta/{id}', 'Api\PhongMayController@ktvUpdateMoTa');
     Route::put('gv-update-mo-ta/{id}', 'Api\PhongMayController@gvUpdateMoTa');
+
 
 });
 // Route::group([

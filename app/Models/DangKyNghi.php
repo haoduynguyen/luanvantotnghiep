@@ -20,7 +20,8 @@ class DangKyNghi extends Model
         'lich_day_id',
         'description',
         'status',
-        'gv_id'
+        'gv_id',
+        'tuan_id'
     ];
     public $timestamps = true;
     //belongsto 1-N

@@ -13,4 +13,5 @@ interface PhongMayUserRelationRepositoryInterface
  public function delete($id);  
  public function deleteMulti(array $data);
  public function list($user);
+ public function show($id);
 } 

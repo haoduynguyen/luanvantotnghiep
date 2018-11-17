@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 abstract class PhongMayUserRelationRel
 {
     const PHONG_MAY = 'phongMay';
-    const GIANG_VIEN = 'giangVien';
-    const KY_THUAT_VIEN = 'kyThuatVien';
+    const GIANG_VIEN = 'giangVien.profile';
+    const KY_THUAT_VIEN = 'kyThuatVien.profile';
 }
 
 class PhongMayUserRelation extends Model

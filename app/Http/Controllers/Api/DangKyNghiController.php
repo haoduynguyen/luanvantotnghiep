@@ -91,22 +91,20 @@ class DangKyNghiController extends Controller
                     if ($user->id == $lichDay->user_id) {
                         if ($lichDays) {
                             foreach ($lichDays as $item) {
-                                $saveDangKyNghi[] = $this->dangKyNghi->save(['gv_id' => $item->user_id, 'lich_day_id' => $item->id, 'status' => 1]);
+                                $saveDangKyNghi[] = $this->dangKyNghi->save(['gv_id' => $item->user_id, 'lich_day_id' => $item->id, 'status' => 1, 'tuan_id' => $request->tuan_id]);
                             }
-                            if($saveDangKyNghi)
-                            {
-                                return $this->dataSuccess(Message::SUCCESS,$saveDangKyNghi,StatusCode::SUCCESS);
+                            if ($saveDangKyNghi) {
+                                return $this->dataSuccess(Message::SUCCESS, $saveDangKyNghi, StatusCode::SUCCESS);
                             }
                         } else {
-                            $saveDangKyNghi[] = $this->dangKyNghi->save(['gv_id' => $lichDays->user_id, 'lich_day_id' => $request->lich_day_id, 'status' => 1]);
-                            if($saveDangKyNghi)
-                            {
-                                return $this->dataSuccess(Message::SUCCESS,true,StatusCode::SUCCESS);
+                            $saveDangKyNghi[] = $this->dangKyNghi->save(['gv_id' => $lichDays->user_id, 'lich_day_id' => $request->lich_day_id, 'status' => 1, 'tuan_id' => $request->tuan_id]);
+                            if ($saveDangKyNghi) {
+                                return $this->dataSuccess(Message::SUCCESS, $saveDangKyNghi, StatusCode::SUCCESS);
                             }
                         }
                     } else {
                         return $this->dataError('Bạn không có quyền đăng ký nghỉ cho lịch này', false, StatusCode::BAD_REQUEST);
-                }
+                    }
 
                 } catch (Exception $e) {
                     return $this->dataError(Message::SERVER_ERROR, false, StatusCode::SERVER_ERROR);
@@ -115,73 +113,74 @@ class DangKyNghiController extends Controller
         }
     }
 
-        /**
-         * Display the specified resource.
-         *
-         * @param  int $id
-         * @return \Illuminate\Http\Response
-         */
-        public
-        function show($id)
-        {
-            //
-        }
+    /**
+     * Display the specified resource.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public
+    function show($id)
+    {
+        //
+    }
 
-        /**
-         * Show the form for editing the specified resource.
-         *
-         * @param  int $id
-         * @return \Illuminate\Http\Response
-         */
-        public
-        function edit($id)
-        {
-            //
-        }
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public
+    function edit($id)
+    {
+        //
+    }
 
-        /**
-         * Update the specified resource in storage.
-         *
-         * @param  \Illuminate\Http\Request $request
-         * @param  int $id
-         * @return \Illuminate\Http\Response
-         */
-        public
-        function update(Request $request, $id)
-        {
-            $validator = \Validator::make($request->all(), [
-                'user_id' => 'required|unique:api_lich_day',
-                'status' => 'required',
-                'description' => 'required',
-            ]);
-            if ($validator->fails()) {
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public
+    function update(Request $request, $id)
+    {
+        $validator = \Validator::make($request->all(), [
+            'user_id' => 'required|unique:api_lich_day',
+            'status' => 'required',
+            'description' => 'required',
+        ]);
+        if ($validator->fails()) {
 
-                $data_errors = $validator->errors();
+            $data_errors = $validator->errors();
 
-                $array = [];
+            $array = [];
 
-                foreach ($data_errors->messages() as $key => $error) {
+            foreach ($data_errors->messages() as $key => $error) {
 
-                    $array[] = ['key' => $key, 'mess' => $error];
+                $array[] = ['key' => $key, 'mess' => $error];
+            }
+
+            return $this->dataError(Message::ERROR, $array, StatusCode::BAD_REQUEST);
+
+        } else {
+            $data = $request->all();
+            $updateDangKyNghi = $this->dangKyNghi->update($data, $id);
+            try {
+                if ($updateDangKyNghi) {
+                    return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
+                } else {
+                    return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
                 }
-
-                return $this->dataError(Message::ERROR, $array, StatusCode::BAD_REQUEST);
-
-            } else {
-                $data = $request->all();
-                $updateDangKyNghi = $this->dangKyNghi->update($data, $id);
-                try {
-                    if ($updateDangKyNghi) {
-                        return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
-                    } else {
-                        return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
-                    }
-                } catch (Exception $e) {
-                    return $this->dataError(Message::SERVER_ERROR, false, StatusCode::SERVER_ERROR);
-                }
+            } catch (Exception $e) {
+                return $this->dataError(Message::SERVER_ERROR, false, StatusCode::SERVER_ERROR);
             }
         }
+    }
 
+<<<<<<< HEAD
         /**
          * Remove the specified resource from storage.
          *
@@ -193,4 +192,17 @@ class DangKyNghiController extends Controller
         {
 
         }
+=======
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public
+    function destroy($id)
+    {
+        //
+>>>>>>> 39a8381ccb0dd55e43a36cee043c836a97d2bb8e
     }
+}

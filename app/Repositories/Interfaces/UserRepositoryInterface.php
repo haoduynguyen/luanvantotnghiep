@@ -25,4 +25,8 @@ interface UserRepositoryInterface
     public function getUser();
 
     public function getUserFromID($id);
+
+    public function getListByMultiColumn(array $where, $columnsSelected = array('*'));
+
+    public function getByMultiColumn(array $where, $columnsSelected = array('*'));
 } 

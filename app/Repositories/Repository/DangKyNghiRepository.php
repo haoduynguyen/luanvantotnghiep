@@ -9,6 +9,7 @@ class DangKyNghiRepository implements DangKyNghiRepositoryInterface
 {
     private $dangKyNghi;
 
+
     public function __construct()
     {
         $this->dangKyNghi = new DangKyNghi();

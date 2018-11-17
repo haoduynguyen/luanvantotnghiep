@@ -216,10 +216,11 @@ class LichDayController extends Controller
                         $minDate = $temp;
                     }
                 }
+                $thangBatDau = date('Y-m-d', strtotime($minDate . '+'  . ' 238 days'));
                 $tuan = $this->tuan->all();
                 $i = 0;
                 foreach ($tuan as $itemTuan) {
-                    $ngay_bat_dau = date('Y-m-d', strtotime($minDate . '+' . $i . 'days'));
+                    $ngay_bat_dau = date('Y-m-d', strtotime($thangBatDau . '+' . $i . 'days'));
                     $ngay_ket_thuc = date('Y-m-d', strtotime($ngay_bat_dau . ' + 6 days'));
                     $i += 7;
                     $this->tuan->update(['ngay_bat_dau' => $ngay_bat_dau, 'ngay_ket_thuc' => $ngay_ket_thuc], $itemTuan->id);
