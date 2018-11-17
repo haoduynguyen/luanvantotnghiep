@@ -7,6 +7,8 @@ use App\Constants\StatusCode;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+//use Tymon\JWTAuth\JWTAuth;
+use JWTAuth;
 
 class AuthController extends Controller
 {
@@ -39,6 +41,19 @@ class AuthController extends Controller
 
         return $this->dataError( 'Unauthorized', false, StatusCode::UNAUTHORIZED);
     }
+    public function getUser()
+    {
+        $user = JWTAuth::user();
+        try {
+            if ($user) {
+                return $this->dataSuccess(Message::SUCCESS, $user, StatusCode::SUCCESS);
+            } else {
+                return $this->dataError("token fail", false, StatusCode::BAD_REQUEST);
+            }
+        } catch (Exception $e) {
+            return $this->dataError(Message::SERVER_ERROR, $e, StatusCode::SERVER_ERROR);
+        }
+    }
 
     /**
      * Get the authenticated User
@@ -66,6 +81,7 @@ class AuthController extends Controller
      * Refresh a token.
      *
      * @return \Illuminate\Http\JsonResponse
+     *
      */
     public function refresh()
     {

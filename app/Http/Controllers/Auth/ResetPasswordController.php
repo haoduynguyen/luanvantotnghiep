@@ -38,7 +38,6 @@ class ResetPasswordController extends Controller
     }
     protected function sendResetResponse($response)
     {
-        dd('aaaaa');
         return ['status' => trans($response)];
     }
     /**
@@ -48,7 +47,7 @@ class ResetPasswordController extends Controller
      * @param  string  $response
      * @return \Illuminate\Http\RedirectResponse
      */
-    protected function sendResetFailedResponse(Request $request, $response)
+    protected function sendResetFailedResponse( $response)
     {
         return response()->json(['email' => trans($response)], 401);
     }

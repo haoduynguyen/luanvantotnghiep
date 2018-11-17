@@ -20,14 +20,17 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 //User
-
+//social
+//Route::get('/redirect', 'Auth\LoginController@redirectToProvider');
+//Route::get('/callback/google', 'Auth\LoginController@handleProviderCallback');
 //Route::get('user', 'Api\UserController@index');
 //Route::post('user', 'Api\UserController@store');
 Route::resource('user', 'Api\UserController');
 
 //Auth
 Route::post('login', 'Api\AuthController@login');
-
+Route::get('get-user', 'Api\AuthController@getUser');
+Route::post('google', 'Api\CaController@google');
 //Role
 Route::resource('role', 'Api\RoleController');
 Route::resource('ca', 'Api\CaController');
@@ -39,7 +42,7 @@ Route::put('change-password/{id}', 'Api\UserController@changePassword');
 
 
 Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
-Route::post('password/reset', 'Auth\ResetPasswordController@reset');
+Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('password.reset');
 
 Route::get('get-lich', 'Api\LichDayController@index');
 
@@ -54,6 +57,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::post('add-mo-ta','Api\PhongMayController@addMoTaMay');
     Route::get('list-mo-ta','Api\PhongMayController@getMoTaMay');
     Route::put('update-mo-ta/{id}','Api\PhongMayController@updateMoTaMay');
+
 
 });
 // Route::group([

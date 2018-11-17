@@ -40,7 +40,6 @@ class UserRepository implements UserRepositoryInterface
     public function save(array $data)
     {
         return $this->user->create($data);
-
     }
 
     public function update(array $data, $id)
