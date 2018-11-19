@@ -25,4 +25,6 @@ interface DangKyMuonPhongRepositoryInterface
     public function getDataSubmit($id);
 
     public function getDataMuonPhong($param);
+
+    public function getDKMuonPhongFromGV($param, $user);
 } 

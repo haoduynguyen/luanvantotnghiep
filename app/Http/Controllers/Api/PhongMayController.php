@@ -295,9 +295,9 @@ class PhongMayController extends Controller
     function ktvUpdateMoTa(Request $request, $id)
     {
         $validator = \Validator::make($request->all(), [
-            'phong_may_id' => 'required',
+            //'phong_may_id' => 'required',
             'mota_ktv' => 'required',
-            'status' => 'required',
+            //'status' => 'required',
 
         ]);
         if ($validator->fails()) {

@@ -29,7 +29,7 @@ Route::resource('user', 'Api\UserController');
 
 //Auth
 Route::post('login', 'Api\AuthController@login');
-Route::get('get-user', 'Api\AuthController@getUser');
+
 Route::post('google', 'Api\CaController@google');
 //Role
 Route::resource('role', 'Api\RoleController');
@@ -55,6 +55,7 @@ Route::post('import-excel', 'Api\LichDayController@import');
 
 Route::group(['middleware' => ['jwt.auth']], function () {
     Route::get('get-lich-gv', 'Api\LichDayController@getLichDayFromGv');
+    Route::get('get-dk-muon-phong-gv', 'Api\MuonPhongController@getDkMuonPhongFromGv');
     Route::resource('mon-hoc', 'Api\MonHocController');
     Route::resource('dk-muon-phong', 'Api\MuonPhongController');
     Route::resource('dang-ky-nghi', 'Api\DangKyNghiController');
@@ -62,6 +63,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::get('list-mo-ta', 'Api\PhongMayController@getMoTaMay');
     Route::put('ktv-update-mo-ta/{id}', 'Api\PhongMayController@ktvUpdateMoTa');
     Route::put('gv-update-mo-ta/{id}', 'Api\PhongMayController@gvUpdateMoTa');
+    Route::get('get-user', 'Api\AuthController@getUser');
 
 
 });

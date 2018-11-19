@@ -123,6 +123,8 @@ class CaController extends Controller
             ['verify' => false,
                 'headers' => ['Authorization' => "ApiKey"]
             ]);
+        //getBody() lay content data json
+        //Json_decode convert json thành mãng(assoc true) hoặc object(assoc false)
         $data = json_decode($res->getBody(), true);
         DB::beginTransaction();
         try {
@@ -135,6 +137,7 @@ class CaController extends Controller
                         $user['profile'] = $user->profile;
                         $user['token'] = JWTAuth::fromUser($user);
                         $list = $user;
+                        DB::commit();
                         return $this->dataSuccess(Message::SUCCESS, $list, StatusCode::SUCCESS);
                     } catch (\Exception $e) {
                         DB::rollback();

@@ -119,8 +119,7 @@ class DangKyNghiController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public
-    function show($id)
+    public function show($id)
     {
         //
     }
@@ -131,8 +130,7 @@ class DangKyNghiController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public
-    function edit($id)
+    public function edit($id)
     {
         //
     }
@@ -144,8 +142,7 @@ class DangKyNghiController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public
-    function update(Request $request, $id)
+    public function update(Request $request, $id)
     {
         $validator = \Validator::make($request->all(), [
             'user_id' => 'required|unique:api_lich_day',
@@ -180,29 +177,21 @@ class DangKyNghiController extends Controller
         }
     }
 
-<<<<<<< HEAD
-        /**
-         * Remove the specified resource from storage.
-         *
-         * @param  int $id
-         * @return \Illuminate\Http\Response
-         */
-        public
-        function destroy($id)
-        {
 
-        }
-=======
     /**
      * Remove the specified resource from storage.
      *
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public
-    function destroy($id)
+    public function destroy($id)
     {
-        //
->>>>>>> 39a8381ccb0dd55e43a36cee043c836a97d2bb8e
+
     }
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
 }
