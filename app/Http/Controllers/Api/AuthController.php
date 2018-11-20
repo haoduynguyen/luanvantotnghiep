@@ -38,12 +38,12 @@ class AuthController extends Controller
             $user['profile'] = $user->profile;
             return $this->dataSuccess(Message::SUCCESS, $user, StatusCode::SUCCESS);
         }
-
         return $this->dataError( 'Unauthorized', false, StatusCode::UNAUTHORIZED);
     }
     public function getUser()
     {
         $user = JWTAuth::user();
+        $user['profile'] = $user->profile;
         try {
             if ($user) {
                 return $this->dataSuccess(Message::SUCCESS, $user, StatusCode::SUCCESS);

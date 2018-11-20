@@ -146,14 +146,28 @@ class DangKyMuonPhongRepository implements DangKyMuonPhongRepositoryInterface
             return false;
         }
     }
+
     public function getDataSubmit($id)
     {
         $data = $this->dangKyMuonPhong->dkMuonPhongQuery()->find($id);
         return $data;
     }
+
     public function getDataMuonPhong($param)
     {
-        $data = $this->dangKyMuonPhong->dkMuonPhongQuery()->where('hk_id', $param['hk_id'])->where('phong_may_id', $param['phong_may_id'])
+        $data = $this->dangKyMuonPhong->dkMuonPhongQuery()->where('hk_id', $param['hk_id'])
+            ->where('phong_may_id', $param['phong_may_id'])
+            ->whereHas('tuan', function ($query) use ($param) {
+                $query->where('tuan_id', $param['tuan_id'])->where('status', 'x');
+            })->get();
+        return $data;
+    }
+
+    public function getDKMuonPhongFromGV($param, $user)
+    {
+        $data = $this->dangKyMuonPhong->dkMuonPhongQuery()->where('hk_id', $param['hk_id'])
+            ->where('phong_may_id', $param['phong_may_id'])
+            ->where('user_id', $user->id)
             ->whereHas('tuan', function ($query) use ($param) {
                 $query->where('tuan_id', $param['tuan_id'])->where('status', 'x');
             })->get();

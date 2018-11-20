@@ -123,40 +123,30 @@ class CaController extends Controller
             ['verify' => false,
                 'headers' => ['Authorization' => "ApiKey"]
             ]);
+        //getBody() lay content data json
+        //Json_decode convert json thành mãng(assoc true) hoặc object(assoc false)
         $data = json_decode($res->getBody(), true);
         DB::beginTransaction();
         try {
             if ($data) {
-                $user = $this->user->getByMultiColumn(['google_id' => $data['id'],
-                    'email' => $data['email']]);
+                $user = $this->user->getByColumn('email', $data['email']);
                 if ($user) {
                     try {
                         $user['user'] = $this->user->get($user->id);
                         $user['profile'] = $user->profile;
                         $user['token'] = JWTAuth::fromUser($user);
                         $list = $user;
+                        DB::commit();
                         return $this->dataSuccess(Message::SUCCESS, $list, StatusCode::SUCCESS);
                     } catch (\Exception $e) {
                         DB::rollback();
                         return $this->dataError(Message::SERVER_ERROR, $e->getMessage(), StatusCode::SERVER_ERROR);
                     }
                 } else {
-                    $saveUser = $this->user->save(['email' => $data['email'], 'role_id' => 1, 'google_id' => $data['id']]);
-                    if ($saveUser) {
-                        $user = $this->user->get($saveUser->id);
-                        $user['token'] = JWTAuth::fromUser($saveUser);
-                        $this->userProfile->save(['first_name' => $data['family_name'], 'last_name' => $data['given_name'], 'user_id' => $saveUser->id]);
-                        $user['profile'] = $saveUser->profile;
-                        $list = $user;
-                        DB::commit();
-                        return $this->dataSuccess(Message::SUCCESS, $list, StatusCode::SUCCESS);
+                        return $this->dataError('Email của bạn không tồn tại', false, StatusCode::BAD_REQUEST);
                     }
                 }
-            } else {
-                DB::rollback();
-                return $this->dataError('tài khoản google không tồn tại', false, StatusCode::NOT_FOUND);
-            }
-        } catch (\Exception $e) {
+            }  catch (\Exception $e) {
             return $this->dataError(Message::SERVER_ERROR, $e->getMessage(), StatusCode::SERVER_ERROR);
         }
 

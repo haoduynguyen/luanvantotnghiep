@@ -89,11 +89,10 @@ class UserController extends Controller
         } else {
             $data = $request->all();
             try {
-                $user = $this->user->save(['email' => $request->email, 'password' => Hash::make($request->password), 'name' => $request->first_name]);
+                $user = $this->user->save(['email' => $request->email, 'password' => Hash::make($request->password),"role_id" => $request->role_id]);
                 if ($user) {
                     $userProfile = $this->userProfile->save($data);
                     $userProfile->update(['user_id' => $user->id]);
-                    $this->userRole->save(['user_id' => $user->id, "role_id" => $request->role_id]);
                 }
                 return $this->dataSuccess(Message::SUCCESS, true, StatusCode::SUCCESS);
             } catch (Exception $e) {

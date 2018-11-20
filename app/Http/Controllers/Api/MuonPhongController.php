@@ -29,7 +29,6 @@ class MuonPhongController extends Controller
     public function index(Request $request)
     {
         $data = $this->dkMuonPhong->getDataMuonPhong($request->all());
-
         try {
             if ($data) {
                 return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
@@ -40,7 +39,22 @@ class MuonPhongController extends Controller
             return $this->dataError(Message::SERVER_ERROR, false, StatusCode::SERVER_ERROR);
         }
     }
+    public function getDkMuonPhongFromGv(Request $request)
+    {
+        $tokenHeader = $request->header('Authorization');
+        $tokenUser = explode(' ', $tokenHeader, 2)[1];
+        $user = JWTAuth::toUser($tokenUser);
+        $data = $this->dkMuonPhong->getDKMuonPhongFromGV($request->all(), $user);
+        try {
+            if (!empty($data)) {
+                return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
+            }
+            return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+        } catch (\Exception $e) {
+            return $this->dataError(Message::SERVER_ERROR, [], StatusCode::SERVER_ERROR);
+        }
 
+    }
     /**
      * Show the form for creating a new resource.
      *
