@@ -22,5 +22,4 @@ interface TuanMuonPhongRelationRepositoryInterface
 
     public function deleteMulti(array $data);
 
-    public function getDS($user);
 } 

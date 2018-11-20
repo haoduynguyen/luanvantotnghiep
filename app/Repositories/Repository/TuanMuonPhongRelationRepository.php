@@ -147,8 +147,4 @@ class TuanMuonPhongRelationRepository implements TuanMuonPhongRelationRepository
         }
     }
 
-    public function getDS($user)
-    {
-        return $this->tuanMuonPhongRelation->tuanMuonPhongReletionQuery()->where('user_id', $user->id)->get();
-    }
 } 
