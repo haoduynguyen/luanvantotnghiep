@@ -45,6 +45,8 @@ Route::delete('delete-id/{id}', 'Api\PhongMayController@deleteID');
 
 
 
+
+
 Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('password.reset');
 
@@ -57,11 +59,13 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::get('get-lich-gv', 'Api\LichDayController@getLichDayFromGv');
     Route::resource('mon-hoc', 'Api\MonHocController');
     Route::resource('dk-muon-phong', 'Api\MuonPhongController');
+    Route::get('get-DS/{id}', 'Api\MuonPhongController@getDStheoID');
     Route::resource('dang-ky-nghi', 'Api\DangKyNghiController');
     Route::post('add-mo-ta', 'Api\PhongMayController@addMoTaMay');
     Route::get('list-mo-ta', 'Api\PhongMayController@getMoTaMay');
     Route::put('ktv-update-mo-ta/{id}', 'Api\PhongMayController@ktvUpdateMoTa');
     Route::put('gv-update-mo-ta/{id}', 'Api\PhongMayController@gvUpdateMoTa');
+
 
 
 });
