@@ -173,4 +173,16 @@ class DangKyMuonPhongRepository implements DangKyMuonPhongRepositoryInterface
             })->get();
         return $data;
     }
+
+    public function getDSMuonPhong($user)
+    {
+        if($user->role_id == 1)
+        {
+            $data = $this->dangKyMuonPhong->dkMuonPhongQuery()->where('user_id',$user->id)->get();
+        }
+        else{
+            $data = $this->dangKyMuonPhong->dkMuonPhongQuery()->get();
+        }
+        return $data;
+    }
 } 

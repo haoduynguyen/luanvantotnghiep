@@ -60,12 +60,11 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::get('get-dk-muon-phong-gv', 'Api\MuonPhongController@getDkMuonPhongFromGv');
     Route::resource('mon-hoc', 'Api\MonHocController');
     Route::resource('dk-muon-phong', 'Api\MuonPhongController');
-    Route::get('get-DS', 'Api\MuonPhongController@getDStheoID');
+    Route::get('get-ds-muon-phong', 'Api\MuonPhongController@getDSMuonPhong');
     Route::resource('dang-ky-nghi', 'Api\DangKyNghiController');
     Route::post('add-mo-ta', 'Api\PhongMayController@addMoTaMay');
     Route::get('list-mo-ta', 'Api\PhongMayController@getMoTaMay');
-    Route::put('ktv-update-mo-ta/{id}', 'Api\PhongMayController@ktvUpdateMoTa');
-    Route::put('gv-update-mo-ta/{id}', 'Api\PhongMayController@gvUpdateMoTa');
+    Route::put('update-mo-ta/{id}', 'Api\PhongMayController@updateMoTa');
     Route::get('get-user', 'Api\AuthController@getUser');
 
 

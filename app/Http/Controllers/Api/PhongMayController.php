@@ -244,100 +244,85 @@ class PhongMayController extends Controller
         }
     }
 
-    public function gvUpdateMoTa(Request $request, $id)
+    public function updateMoTa(Request $request, $id)
     {
-        $validator = \Validator::make($request->all(), [
-            //'phong_may_id' => 'required',
-            'mota_gv' => 'required',
+        $tokenHeader = $request->header('Authorization');
+        $tokenUser = explode(' ', $tokenHeader, 2)[1];
+        $user = JWTAuth::toUser($tokenUser);
+        $data = $request->all();
+        if ($user->role_id == 1) {
+            $validator = \Validator::make($request->all(), [
+                //'phong_may_id' => 'required',
+                'mota_gv' => 'required',
 
-        ]);
-        if ($validator->fails()) {
+            ]);
+            if ($validator->fails()) {
 
-            $data_errors = $validator->errors();
+                $data_errors = $validator->errors();
 
-            $array = [];
+                $array = [];
 
-            foreach ($data_errors->messages() as $key => $error) {
+                foreach ($data_errors->messages() as $key => $error) {
 
-                $array[] = ['key' => $key, 'mess' => $error];
-            }
+                    $array[] = ['key' => $key, 'mess' => $error];
+                }
 
-            return $this->dataError(Message::ERROR, $array, StatusCode::BAD_REQUEST);
+                return $this->dataError(Message::ERROR, $array, StatusCode::BAD_REQUEST);
 
-        } else {
-
-            $tokenHeader = $request->header('Authorization');
-            $tokenUser = explode(' ', $tokenHeader, 2)[1];
-            $user = JWTAuth::toUser($tokenUser);
-            $data = $request->all();
-
-            try {
-                if ($user->role_id == 1) {
-                    $data['gv_id'] = $user->id;
-                    $updateGV = $this->phongMayUserRelation->update($data, $id);
+            } else {
+                $data['gv_id'] = $user->id;
+                $updateGV = $this->phongMayUserRelation->update($data, $id);
+                try {
                     if ($updateGV) {
                         return $this->dataSuccess(Message::SUCCESS, true, StatusCode::SUCCESS);
                     } else {
                         return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
                     }
-                } else {
-                    return $this->dataError("Bạn không có quyền cập nhật chức năng này!", false, StatusCode::BAD_REQUEST);
+                } catch (\Exception $e) {
+                    return $this->dataError(Message::SERVER_ERROR, $e, StatusCode::SERVER_ERROR);
+                }
+            }
+        } else if ($user->role_id == 2) {
+            $validator = \Validator::make($request->all(), [
+                //'phong_may_id' => 'required',
+                'mota_ktv' => 'required',
+                //'status' => 'required',
+
+            ]);
+            if ($validator->fails()) {
+
+                $data_errors = $validator->errors();
+
+                $array = [];
+
+                foreach ($data_errors->messages() as $key => $error) {
+
+                    $array[] = ['key' => $key, 'mess' => $error];
                 }
 
-            } catch
-            (\Exception $e) {
-                return $this->dataError(Message::SERVER_ERROR, $e, StatusCode::SERVER_ERROR);
-            }
-        }
-    }
+                return $this->dataError(Message::ERROR, $array, StatusCode::BAD_REQUEST);
 
-    public
-    function ktvUpdateMoTa(Request $request, $id)
-    {
-        $validator = \Validator::make($request->all(), [
-            //'phong_may_id' => 'required',
-            'mota_ktv' => 'required',
-            //'status' => 'required',
-
-        ]);
-        if ($validator->fails()) {
-
-            $data_errors = $validator->errors();
-
-            $array = [];
-
-            foreach ($data_errors->messages() as $key => $error) {
-
-                $array[] = ['key' => $key, 'mess' => $error];
-            }
-
-            return $this->dataError(Message::ERROR, $array, StatusCode::BAD_REQUEST);
-
-        } else {
-
-            $tokenHeader = $request->header('Authorization');
-            $tokenUser = explode(' ', $tokenHeader, 2)[1];
-            $user = JWTAuth::toUser($tokenUser);
-            $data = $request->all();
-            try {
-                if ($user->role_id == 2) {
-                    $data['ktv_id'] = $user->id; //dd($data);
-                    $updateKTV = $this->phongMayUserRelation->update($data, $id);
+            } else {
+                $data['ktv_id'] = $user->id; //dd($data);
+                $updateKTV = $this->phongMayUserRelation->update($data, $id);
+                try {
                     if ($updateKTV) {
                         return $this->dataSuccess(Message::SUCCESS, true, StatusCode::SUCCESS);
                     } else {
                         return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
                     }
-                } else {
-                    return $this->dataError("Bạn không có quyền cập nhật chức năng này", false, StatusCode::BAD_REQUEST);
+                } catch (\Exception $e) {
+                    return $this->dataError(Message::SERVER_ERROR, $e, StatusCode::SERVER_ERROR);
                 }
-            } catch (\Exception $e) {
-                return $this->dataError(Message::SERVER_ERROR, $e, StatusCode::SERVER_ERROR);
             }
+        } else {
+            return $this->dataError("Bạn không có quyền cập nhật chức năng này", false, StatusCode::BAD_REQUEST);
         }
     }
 
-    public function deleteID($id)
+
+    public
+    function deleteID($id)
     {
         $deleteID = $this->phongMayUserRelation->delete($id);
         try {

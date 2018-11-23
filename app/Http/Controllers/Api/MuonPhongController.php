@@ -153,12 +153,12 @@ class MuonPhongController extends Controller
         }
     }
 
-    public function getDStheoID(Request $request)
+    public function getDSMuonPhong(Request $request)
     {
         $tokenHeader = $request->header('Authorization');
         $tokenUser = explode(' ', $tokenHeader, 2)[1];
         $user = JWTAuth::toUser($tokenUser);
-        $data = $this->dkMuonPhong->getListByColumn('user_id',$user->id);
+        $data = $this->dkMuonPhong->getDSMuonPhong($user);
         try {
             if ($data) {
                 return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
