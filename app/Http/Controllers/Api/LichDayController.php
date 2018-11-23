@@ -202,21 +202,27 @@ class LichDayController extends Controller
             $path = $request->file('file_import')->getRealPath();
             $data = \Excel::load($path, function ($reader) {
             })->get();
-            $totalData = count($data);
+           // $totalData = count($data);
             if ($data) {
                 foreach ($data as $item) {
                     $findNgayBatDau = (explode('-', $item['f_tghoc']));
                     $ngayBatDau[] = $this->editTypeDate($findNgayBatDau['0']);
                 }
                 //Tìm ngày thấp nhất trong excel
-                for ($i = 0; $i < $totalData - 1; $i++) {
-                    $min = $ngayBatDau[$i];
-                    $temp = $ngayBatDau[$i + 1];
-                    if ($min > $temp) {
-                        $minDate = $temp;
+                $minDate = $ngayBatDau[0];
+                foreach ($ngayBatDau as $itemNgayBatDau) {
+                    if ($itemNgayBatDau < $minDate) {
+                        $minDate = $itemNgayBatDau;
                     }
                 }
-                $thangBatDau = date('Y-m-d', strtotime($minDate . '+'  . ' 238 days'));
+//                for ($i = 0; $i < $totalData - 1; $i++) {
+//                    $min = $ngayBatDau[$i];
+//                    $temp = $ngayBatDau[$i + 1];
+//                    if ($min > $temp) {
+//                        $minDate = $temp;
+//                    }
+//                }
+                $thangBatDau = date('Y-m-d', strtotime($minDate . '+' . ' 238 days'));
                 $tuan = $this->tuan->all();
                 $i = 0;
                 foreach ($tuan as $itemTuan) {
@@ -308,7 +314,7 @@ class LichDayController extends Controller
                                             if ($item[$t] == "") {
                                                 $item[$t] = '0';
                                             }
-                                                $this->lichDayTuan->save(['tuan_id' => $tuan->id, 'lich_day_id' => $saveLichDay->id, 'status' => $item[$t]]);
+                                            $this->lichDayTuan->save(['tuan_id' => $tuan->id, 'lich_day_id' => $saveLichDay->id, 'status' => $item[$t]]);
                                         }
                                     }
                                 }
