@@ -9,6 +9,7 @@ use App\Repositories\Interfaces\DangKyMuonPhongRepositoryInterface;
 use App\Repositories\Interfaces\TuanMuonPhongRelationRepositoryInterface;
 use Illuminate\Http\Request;
 use JWTAuth;
+use DateTime;
 
 class MuonPhongController extends Controller
 {
@@ -135,22 +136,32 @@ class MuonPhongController extends Controller
      */
     public function destroy($id)
     {
-        $data = $this->tuanMuonPhong->getByColumn('muon_phong_id', $id);
-        try {
-            if ($data) {
-                $deleteTuanMP = $this->tuanMuonPhong->delete($data->id);
-                if ($deleteTuanMP) {
-                    $deleteMP = $this->dkMuonPhong->delete($id);
-                    if ($deleteMP) {
-                        return $this->dataSuccess(Message::SUCCESS, true, StatusCode::CREATED);
-                    } else {
-                        return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+        $now = new DateTime();
+        $dateNow = $now->format('Y-m-d');
+        $dateDb = $this->dkMuonPhong->get($id);
+        if($dateNow < $dateDb->ngay_muon)
+        {
+            $data = $this->tuanMuonPhong->getByColumn('muon_phong_id', $id);
+            try {
+                if ($data) {
+                    $deleteTuanMP = $this->tuanMuonPhong->delete($data->id);
+                    if ($deleteTuanMP) {
+                        $deleteMP = $this->dkMuonPhong->delete($id);
+                        if ($deleteMP) {
+                            return $this->dataSuccess(Message::SUCCESS, true, StatusCode::SUCCESS);
+                        } else {
+                            return $this->dataError(Message::ERROR,false, StatusCode ::BAD_REQUEST);
+                        }
                     }
                 }
+            } catch (\Exception $e) {
+                return $this->dataError(Message::SERVER_ERROR, $e, StatusCode::SERVER_ERROR);
             }
-        } catch (\Exception $e) {
-            return $this->dataError(Message::SERVER_ERROR, $e, StatusCode::SERVER_ERROR);
         }
+        else{
+            return $this->dataError('Không thể xóa!',false, StatusCode ::BAD_REQUEST);
+        }
+
     }
 
     public function getDSMuonPhong(Request $request)

@@ -5,6 +5,7 @@ namespace App\Repositories\Repository;
 use App\Models\DangKyMuonPhong;
 use App\Repositories\Interfaces\DangKyMuonPhongRepositoryInterface;
 
+
 class DangKyMuonPhongRepository implements DangKyMuonPhongRepositoryInterface
 {
     private $dangKyMuonPhong;
@@ -155,11 +156,12 @@ class DangKyMuonPhongRepository implements DangKyMuonPhongRepositoryInterface
 
     public function getDataMuonPhong($param)
     {
+
         $data = $this->dangKyMuonPhong->dkMuonPhongQuery()->where('hk_id', $param['hk_id'])
-            ->where('phong_may_id', $param['phong_may_id'])
-            ->whereHas('tuan', function ($query) use ($param) {
-                $query->where('tuan_id', $param['tuan_id'])->where('status', 'x');
-            })->get();
+            ->where('phong_may_id', $param['phong_may_id'])->get();
+//            ->whereHas('tuan', function ($query) use ($param) {
+//                $query->where('tuan_id', $param['tuan_id'])->where('status', 'x');
+//            })->get();
         return $data;
     }
 
@@ -179,9 +181,17 @@ class DangKyMuonPhongRepository implements DangKyMuonPhongRepositoryInterface
         if($user->role_id == 1)
         {
             $data = $this->dangKyMuonPhong->dkMuonPhongQuery()->where('user_id',$user->id)->get();
+            foreach($data as $k=>$v)
+            {
+                $v->ngay_muon = date('d-m-Y', strtotime($v->ngay_muon));
+            }
         }
         else{
             $data = $this->dangKyMuonPhong->dkMuonPhongQuery()->get();
+            foreach($data as $k=>$v)
+            {
+                $v->ngay_muon = date('d-m-Y', strtotime($v->ngay_muon));
+            }
         }
         return $data;
     }
