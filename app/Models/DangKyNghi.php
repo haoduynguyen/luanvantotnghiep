@@ -21,7 +21,8 @@ class DangKyNghi extends Model
         'description',
         'status',
         'gv_id',
-        'tuan_id'
+        'tuan_id',
+        'ngay_nghi',
     ];
     public $timestamps = true;
     //belongsto 1-N
@@ -42,7 +43,9 @@ class DangKyNghi extends Model
     }
     public function DangKyNghiQuery()
     {
-        return $this->with(DangKyNghiRel::GIANG_VIEN)->with(DangKyNghiRel::LICH_DAY)->with(DangKyNghiRel::USER);
+        return $this->with(DangKyNghiRel::GIANG_VIEN)
+            ->with(DangKyNghiRel::LICH_DAY)
+            ->with(DangKyNghiRel::USER);
     }
 
 }

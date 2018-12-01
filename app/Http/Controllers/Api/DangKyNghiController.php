@@ -10,6 +10,7 @@ use App\Repositories\Interfaces\LichDayRepositoryInterface;
 use App\Repositories\Interfaces\LichDayTuanRelationRepositoryInterface;
 use Illuminate\Http\Request;
 use JWTAuth;
+use DateTime;
 
 class DangKyNghiController extends Controller
 {
@@ -32,7 +33,7 @@ class DangKyNghiController extends Controller
 
     public function index()
     {
-        $data = $this->dangKyNghi->test();
+        $data = $this->dangKyNghi->getDSNghi();
         try {
             if ($data) {
                 return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
@@ -40,7 +41,7 @@ class DangKyNghiController extends Controller
                 return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
             }
         } catch (Exception $e) {
-            return $this->dataError(Message::SERVER_ERROR, false, StatusCode::SERVER_ERROR);
+            return $this->dataError(Message::SERVER_ERROR, $e, StatusCode::SERVER_ERROR);
         }
     }
 
@@ -186,6 +187,10 @@ class DangKyNghiController extends Controller
      */
     public function destroy($id)
     {
+//        $now = new DateTime();
+//        $dateNow = $now->format('Y-m-d');
+//        $data = $this->dangKyNghi->get($id);
+
 
     }
     /**
@@ -194,4 +199,22 @@ class DangKyNghiController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
+
+    public function getDKNghi(Request $request)
+    {
+        $tokenHeader = $request->header('Authorization');
+        $tokenUser = explode(' ', $tokenHeader, 2)[1];
+        $user = JWTAuth::toUser($tokenUser);
+        $data = $this->dangKyNghi->getDSNghi($user);
+        try {
+            if ($data) {
+                return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
+            } else {
+                return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+            }
+
+        } catch (\Exception $e) {
+            return $this->dataError(Message::SERVER_ERROR, false, StatusCode::SERVER_ERROR);
+        }
+    }
 }

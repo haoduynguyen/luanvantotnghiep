@@ -7,9 +7,9 @@ use App\Constants\StatusCode;
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\DangKyMuonPhongRepositoryInterface;
 use App\Repositories\Interfaces\TuanMuonPhongRelationRepositoryInterface;
+use DateTime;
 use Illuminate\Http\Request;
 use JWTAuth;
-use DateTime;
 
 class MuonPhongController extends Controller
 {
@@ -40,6 +40,7 @@ class MuonPhongController extends Controller
             return $this->dataError(Message::SERVER_ERROR, false, StatusCode::SERVER_ERROR);
         }
     }
+
     public function getDkMuonPhongFromGv(Request $request)
     {
         $tokenHeader = $request->header('Authorization');
@@ -56,6 +57,7 @@ class MuonPhongController extends Controller
         }
 
     }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -139,8 +141,7 @@ class MuonPhongController extends Controller
         $now = new DateTime();
         $dateNow = $now->format('Y-m-d');
         $dateDb = $this->dkMuonPhong->get($id);
-        if($dateNow < $dateDb->ngay_muon)
-        {
+        if ($dateNow < $dateDb->ngay_muon) {
             $data = $this->tuanMuonPhong->getByColumn('muon_phong_id', $id);
             try {
                 if ($data) {
@@ -150,16 +151,15 @@ class MuonPhongController extends Controller
                         if ($deleteMP) {
                             return $this->dataSuccess(Message::SUCCESS, true, StatusCode::SUCCESS);
                         } else {
-                            return $this->dataError(Message::ERROR,false, StatusCode ::BAD_REQUEST);
+                            return $this->dataError(Message::ERROR, false, StatusCode ::BAD_REQUEST);
                         }
                     }
                 }
             } catch (\Exception $e) {
                 return $this->dataError(Message::SERVER_ERROR, $e, StatusCode::SERVER_ERROR);
             }
-        }
-        else{
-            return $this->dataError('Không thể xóa!',false, StatusCode ::BAD_REQUEST);
+        } else {
+            return $this->dataError('Không thể xóa!', false, StatusCode ::BAD_REQUEST);
         }
 
     }
@@ -176,7 +176,6 @@ class MuonPhongController extends Controller
             } else {
                 return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
             }
-
         } catch (\Exception $e) {
             return $this->dataError(Message::SERVER_ERROR, false, StatusCode::SERVER_ERROR);
         }
