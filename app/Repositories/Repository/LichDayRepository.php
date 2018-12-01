@@ -156,7 +156,8 @@ class LichDayRepository implements LichDayRepositoryInterface
     }
     public function getLichDayFromGv($param, $user)
     {
-        $data = $this->lichDay->lichDayQuery()->where('hk_id', $param['hk_id'])->where('phong_may_id', $param['phong_may_id'])
+        $data = $this->lichDay->lichDayQuery()->where('hk_id', $param['hk_id'])
+            ->where('phong_may_id', $param['phong_may_id'])
             ->whereHas('tuan', function ($query) use ($param) {
                 $query->where('tuan_id', $param['tuan_id'])->where('status', 'x');
             })->whereHas('user', function ($query) use ($user) {

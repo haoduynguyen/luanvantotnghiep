@@ -22,6 +22,6 @@ interface DangKyNghiRepositoryInterface
 
     public function deleteMulti(array $data);
 
-    public function test();
+    public function getDSNghi($user);
 
 } 

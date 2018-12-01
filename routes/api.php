@@ -41,7 +41,7 @@ Route::resource('phong-may', 'Api\PhongMayController');
 Route::put('change-password/{id}', 'Api\UserController@changePassword');
 
 Route::get('show-mo-ta-id/{id}', 'Api\PhongMayController@showMoTaID');
-Route::delete('delete-id/{id}', 'Api\PhongMayController@deleteID');
+Route::delete('delete-may-loi/{id}', 'Api\PhongMayController@deleteID');
 
 
 
@@ -62,6 +62,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::resource('dk-muon-phong', 'Api\MuonPhongController');
     Route::get('get-ds-muon-phong', 'Api\MuonPhongController@getDSMuonPhong');
     Route::resource('dang-ky-nghi', 'Api\DangKyNghiController');
+    Route::get('get-dk-nghi', 'Api\DangKyNghiController@getDKNghi');
     Route::post('add-mo-ta', 'Api\PhongMayController@addMoTaMay');
     Route::get('list-mo-ta', 'Api\PhongMayController@getMoTaMay');
     Route::put('update-mo-ta/{id}', 'Api\PhongMayController@updateMoTa');
