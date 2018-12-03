@@ -43,7 +43,7 @@ class CaController extends Controller
                 return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
             }
         } catch (Exception $e) {
-            return $this->dataSuccess(Message::SERVER_ERROR, false, StatusCode::SERVER_ERROR);
+            return $this->dataSuccess(Message::SERVER_ERROR, $e->getMessage(), StatusCode::SERVER_ERROR);
         }
     }
 
@@ -150,5 +150,40 @@ class CaController extends Controller
             return $this->dataError(Message::SERVER_ERROR, $e->getMessage(), StatusCode::SERVER_ERROR);
         }
 
+    }
+    public function facebook(Request $request)
+    {
+        $client = new \GuzzleHttp\Client();
+
+        $res = $client->request('GET', 'https://graph.facebook.com/me?fields=id,name,address,birthday,context,email,about,first_name,gender,inspirational_people,last_name&access_token=' . $request->access_token,
+            ['verify' => false,
+                'headers' => ['Authorization' => "ApiKey"]
+            ]);
+        //getBody() lay content data json
+        //Json_decode convert json thành mãng(assoc true) hoặc object(assoc false)
+        $data = json_decode($res->getBody(), true);
+        DB::beginTransaction();
+        try {
+            if ($data) {
+                $user = $this->user->getByColumn('email', $data['email']);
+                if ($user) {
+                    try {
+                        $user['user'] = $this->user->get($user->id);
+                        $user['profile'] = $user->profile;
+                        $user['token'] = JWTAuth::fromUser($user);
+                        $list = $user;
+                        DB::commit();
+                        return $this->dataSuccess(Message::SUCCESS, $list, StatusCode::SUCCESS);
+                    } catch (\Exception $e) {
+                        DB::rollback();
+                        return $this->dataError(Message::SERVER_ERROR, $e->getMessage(), StatusCode::SERVER_ERROR);
+                    }
+                } else {
+                    return $this->dataError('Email của bạn không tồn tại', false, StatusCode::BAD_REQUEST);
+                }
+            }
+        }  catch (\Exception $e) {
+            return $this->dataError(Message::SERVER_ERROR, $e->getMessage(), StatusCode::SERVER_ERROR);
+        }
     }
 }

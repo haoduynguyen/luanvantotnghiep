@@ -92,13 +92,13 @@ class DangKyNghiController extends Controller
                     if ($user->id == $lichDay->user_id) {
                         if ($lichDays) {
                             foreach ($lichDays as $item) {
-                                $saveDangKyNghi[] = $this->dangKyNghi->save(['gv_id' => $item->user_id, 'lich_day_id' => $item->id, 'status' => 1, 'tuan_id' => $request->tuan_id]);
+                                $saveDangKyNghi[] = $this->dangKyNghi->save(['gv_id' => $item->user_id, 'lich_day_id' => $item->id, 'status' => 1, 'tuan_id' => $request->tuan_id,'ngay_nghi'=>$request->ngay_nghi]);
                             }
                             if ($saveDangKyNghi) {
                                 return $this->dataSuccess(Message::SUCCESS, $saveDangKyNghi, StatusCode::SUCCESS);
                             }
                         } else {
-                            $saveDangKyNghi[] = $this->dangKyNghi->save(['gv_id' => $lichDays->user_id, 'lich_day_id' => $request->lich_day_id, 'status' => 1, 'tuan_id' => $request->tuan_id]);
+                            $saveDangKyNghi[] = $this->dangKyNghi->save(['gv_id' => $lichDays->user_id, 'lich_day_id' => $request->lich_day_id, 'status' => 1, 'tuan_id' => $request->tuan_id,'ngay_nghi'=>$request->ngay_nghi]);
                             if ($saveDangKyNghi) {
                                 return $this->dataSuccess(Message::SUCCESS, $saveDangKyNghi, StatusCode::SUCCESS);
                             }
