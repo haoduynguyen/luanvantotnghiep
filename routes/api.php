@@ -43,7 +43,7 @@ Route::put('change-password/{id}', 'Api\UserController@changePassword');
 Route::get('show-mo-ta-id/{id}', 'Api\PhongMayController@showMoTaID');
 Route::delete('delete-may-loi/{id}', 'Api\PhongMayController@deleteID');
 
-
+Route::put('update-status-mp/{id}', 'Api\MuonPhongController@updateStatus');
 
 
 
