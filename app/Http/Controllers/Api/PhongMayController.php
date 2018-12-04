@@ -174,7 +174,7 @@ class PhongMayController extends Controller
      */
     public function destroy($id)
     {
-
+        $this->phongMay->delete($id);
     }
 
     public function showMoTaID($id)

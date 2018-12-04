@@ -153,18 +153,17 @@ class DangKyNghiRepository implements DangKyNghiRepositoryInterface
         if ($user->role_id == 1) {
             $data = $this->dangKyNghi->DangKyNghiQuery()->where('gv_id', $user->id)->get();
             foreach ($data as $v) {
-               $v->lichDay =  $v->LichDay->lichDayQuery()->find($v->LichDay->id);
-               $v->setRelation('LichDay',null);
-               $v->lichDay->setRelation('tuan',null);
-               $v->ngay_nghi = date('d-m-Y', strtotime($v->ngay_nghi));
+                $v->lichDay = $v->LichDay->lichDayQuery()->find($v->LichDay->id);
+                $v->setRelation('LichDay', null);
+                $v->lichDay->setRelation('tuan', null);
+                $v->ngay_nghi = date('d-m-Y', strtotime($v->ngay_nghi));
             }
-
         } else {
             $data = $this->dangKyNghi->DangKyNghiQuery()->get();
             foreach ($data as $v) {
-                $v->lichDay =  $v->LichDay->lichDayQuery()->find($v->LichDay->id);
-                $v->setRelation('LichDay',null);
-                $v->lichDay->setRelation('tuan',null);
+                $v->lichDay = $v->LichDay->lichDayQuery()->find($v->LichDay->id);
+                $v->setRelation('LichDay', null);
+                $v->lichDay->setRelation('tuan', null);
                 $v->ngay_nghi = date('d-m-Y', strtotime($v->ngay_nghi));
             }
         }

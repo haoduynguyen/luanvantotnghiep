@@ -29,8 +29,9 @@ Route::resource('user', 'Api\UserController');
 
 //Auth
 Route::post('login', 'Api\AuthController@login');
-
+//social
 Route::post('google', 'Api\CaController@google');
+Route::post('facebook', 'Api\CaController@facebook');
 //Role
 Route::resource('role', 'Api\RoleController');
 Route::resource('ca', 'Api\CaController');
