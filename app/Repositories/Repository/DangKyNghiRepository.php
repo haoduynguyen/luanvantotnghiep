@@ -158,7 +158,6 @@ class DangKyNghiRepository implements DangKyNghiRepositoryInterface
                 $v->lichDay->setRelation('tuan', null);
                 $v->ngay_nghi = date('d-m-Y', strtotime($v->ngay_nghi));
             }
-
         } else {
             $data = $this->dangKyNghi->DangKyNghiQuery()->get();
             foreach ($data as $v) {

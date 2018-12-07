@@ -190,8 +190,10 @@ class DangKyNghiController extends Controller
 //        $now = new DateTime();
 //        $dateNow = $now->format('Y-m-d');
 //        $data = $this->dangKyNghi->get($id);
-
-
+//        if($dateNow < $data->ngay_nghi)
+//        {
+//
+//        }
     }
     /**
      * Remove the specified resource from storage.

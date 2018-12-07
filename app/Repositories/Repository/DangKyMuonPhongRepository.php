@@ -178,7 +178,10 @@ class DangKyMuonPhongRepository implements DangKyMuonPhongRepositoryInterface
     public function getDSMuonPhong($user)
     {
         if ($user->role_id == 1) {
-            $data = $this->dangKyMuonPhong->dkMuonPhongQuery()->where('user_id', $user->id)->where('status', 1)->get();
+
+            $data = $this->dangKyMuonPhong->dkMuonPhongQuery()
+                ->where('user_id', $user->id)
+                ->where('status', '1')->get();
             foreach ($data as $k => $v) {
                 $v->ngay_muon = date('d-m-Y', strtotime($v->ngay_muon));
             }

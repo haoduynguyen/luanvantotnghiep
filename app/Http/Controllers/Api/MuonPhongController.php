@@ -181,4 +181,28 @@ class MuonPhongController extends Controller
             return $this->dataError(Message::SERVER_ERROR, false, StatusCode::SERVER_ERROR);
         }
     }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $data = $request->all();
+        $now = new DateTime();
+        $dateNow = $now->format('Y-m-d');
+        $dateDb = $this->dkMuonPhong->get($id);
+        if ($dateNow <= $dateDb->ngay_muon) {
+            $data['status'] = 0;
+            $updateStatus = $this->dkMuonPhong->update($data, $id);
+            try {
+                if ($updateStatus) {
+                    return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
+                } else {
+                    return $this->dataError(Message::ERROR, 'false', StatusCode::BAD_REQUEST);
+                }
+            } catch (\Exception $e) {
+                return $this->dataError(Message::SERVER_ERROR, 'false', StatusCode::SERVER_ERROR);
+            }
+        } else {
+            return $this->dataError('Không thể xóa vì đăng ký đã hết hạn!');
+        }
+
+    }
 }
