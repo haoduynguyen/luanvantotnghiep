@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Constants\Message;
 use App\Constants\StatusCode;
 use App\Http\Controllers\Controller;
+use App\User;
 use App\Repositories\Interfaces\DangKyMuonPhongRepositoryInterface;
 use App\Repositories\Interfaces\TuanMuonPhongRelationRepositoryInterface;
 use DateTime;
