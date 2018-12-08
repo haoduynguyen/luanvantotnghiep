@@ -80,19 +80,26 @@ class MuonPhongController extends Controller
         $tokenUser = explode(' ', $tokenHeader, 2)[1];
         $user = JWTAuth::toUser($tokenUser);
         $data = $request->all();
-        $data['status'] = 1;
-        $data['user_id'] = $user->id;
-        $dkMuonPhong = $this->dkMuonPhong->save($data);
-        $this->tuanMuonPhong->save(['tuan_id' => $request->tuan_id, 'muon_phong_id' => $dkMuonPhong->id, 'status' => 'x']);
-        $dataSubmit = $this->dkMuonPhong->getDataSubmit($dkMuonPhong->id);
-        try {
-            if ($dataSubmit) {
-                return $this->dataSuccess(Message::SUCCESS, $dataSubmit, StatusCode::CREATED);
-            } else {
-                return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+        $now = new DateTime();
+        $dateNow = $now->format('Y-m-d');
+        $dateDb = $request->ngay_muon;
+        if ($dateNow < $dateDb) {
+            $data['status'] = 1;
+            $data['user_id'] = $user->id;
+            $dkMuonPhong = $this->dkMuonPhong->save($data);
+            $this->tuanMuonPhong->save(['tuan_id' => $request->tuan_id, 'muon_phong_id' => $dkMuonPhong->id, 'status' => 'x']);
+            $dataSubmit = $this->dkMuonPhong->getDataSubmit($dkMuonPhong->id);
+            try {
+                if ($dataSubmit) {
+                    return $this->dataSuccess(Message::SUCCESS, $dataSubmit, StatusCode::CREATED);
+                } else {
+                    return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+                }
+            } catch (\Exception $e) {
+                return $this->dataError(Message::SERVER_ERROR, $e, StatusCode::SERVER_ERROR);
             }
-        } catch (\Exception $e) {
-            return $this->dataError(Message::SERVER_ERROR, $e, StatusCode::SERVER_ERROR);
+        } else {
+            return $this->dataError('Không thể đăng ký mượn phòng!', false, StatusCode ::BAD_REQUEST);
         }
     }
 
