@@ -63,14 +63,11 @@ class UserRepository implements UserRepositoryInterface
 
     public function getByColumn($column, $value, $columnsSelected = array('*'))
     {
-
         $data = $this->user->where($column, $value)->first();
         if ($data) {
             return $data;
         }
         return null;
-
-
     }
 
     public function getByMultiColumn(array $where, $columnsSelected = array('*'))
@@ -101,8 +98,6 @@ class UserRepository implements UserRepositoryInterface
             return $data;
         }
         return null;
-
-
     }
 
     public function getListByMultiColumn(array $where, $columnsSelected = array('*'))

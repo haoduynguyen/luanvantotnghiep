@@ -26,7 +26,8 @@ class DangKyMuonPhong extends Model
         'thu_id',
         'user_id',
         'hk_id',
-        'ngay_muon'
+        'ngay_muon',
+        'ghi_chu'
     ];
 
     public $timestamps = true;

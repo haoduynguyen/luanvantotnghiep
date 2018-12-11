@@ -9,7 +9,7 @@ use App\Repositories\Interfaces\PhongMayRepositoryInterface;
 use App\Repositories\Interfaces\PhongMayUserRelationRepositoryInterface;
 use Illuminate\Http\Request;
 use JWTAuth;
-
+use Excel;
 class PhongMayController extends Controller
 {
     /**
@@ -197,9 +197,7 @@ class PhongMayController extends Controller
         $tokenHeader = $request->header('Authorization');
         $tokenUser = explode(' ', $tokenHeader, 2)[1];
         $user = JWTAuth::toUser($tokenUser);
-
-        $data = $this->phongMayUserRelation->list($user);
-
+        $data = $this->phongMayUserRelation->list($user , $request->all());
         try {
             if ($data) {
                 return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
@@ -344,4 +342,27 @@ class PhongMayController extends Controller
             return $this->dataError(Message::SERVER_ERROR, false, StatusCode::SERVER_ERROR);
         }
     }
+    public function exportDanhSachLoi(Request $request)
+    {
+        $tokenHeader = $request->header('Authorization');
+        $tokenUser = explode(' ', $tokenHeader, 2)[1];
+        $user = JWTAuth::toUser($tokenUser);
+        $list = $this->phongMayUserRelation->exportList($user,$request->all());
+        $fileName = 'Danh_Sach_May_Loi' . date("H_i_s");
+        Excel::create($fileName, function ($excel) use ($list) {
+            $excel->sheet('New sheet', function ($sheet) use ($list) {
+
+                $sheet->setorientation('landscape');
+
+                $sheet->loadView('export.DSMayLoi.list', [
+                    'list' => $list
+                ]);
+                //$sheet->setWidth('I', 100);
+            });
+
+        })->store('xlsx', public_path('uploads'));
+        $url = '/uploads/' . $fileName . '.xlsx';
+        return $url;
+    }
+
 }
