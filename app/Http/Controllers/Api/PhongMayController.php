@@ -215,7 +215,6 @@ class PhongMayController extends Controller
         $validator = \Validator::make($request->all(), [
             'phong_may_id' => 'required',
             'mota_gv' => 'required'
-
         ]);
         if ($validator->fails()) {
 

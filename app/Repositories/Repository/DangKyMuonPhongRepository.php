@@ -156,8 +156,9 @@ class DangKyMuonPhongRepository implements DangKyMuonPhongRepositoryInterface
 
     public function getDataMuonPhong($param)
     {
-
-        $data = $this->dangKyMuonPhong->dkMuonPhongQuery()->where('hk_id', $param['hk_id'])
+        $data = $this->dangKyMuonPhong->dkMuonPhongQuery()
+            ->where('hk_id', $param['hk_id'])
+            ->where('status' ,'!=', 0)
             ->whereHas('tuan', function ($query) use ($param) {
                 $query->where('tuan_id', $param['tuan_id'])->where('status', 'x');
             })->get();
@@ -180,12 +181,12 @@ class DangKyMuonPhongRepository implements DangKyMuonPhongRepositoryInterface
         if ($user->role_id == 1) {
             $data = $this->dangKyMuonPhong->dkMuonPhongQuery()
                 ->where('user_id', $user->id)
-                ->where('status', '1')->get();
+                ->where('status', '!=', 0)->get();
             foreach ($data as $k => $v) {
                 $v->ngay_muon = date('d-m-Y', strtotime($v->ngay_muon));
             }
         } else {
-            $data = $this->dangKyMuonPhong->dkMuonPhongQuery()->get();
+            $data = $this->dangKyMuonPhong->dkMuonPhongQuery()->where('status' ,'!=', 0)->get();
             foreach ($data as $k => $v) {
                 $v->ngay_muon = date('d-m-Y', strtotime($v->ngay_muon));
             }

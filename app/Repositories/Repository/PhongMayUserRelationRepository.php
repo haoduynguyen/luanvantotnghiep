@@ -149,18 +149,18 @@ class PhongMayUserRelationRepository implements PhongMayUserRelationRepositoryIn
 
     public function list($user, $param)
     {
-
         if ($user->role_id == 1) {
             if (isset($param) && !empty($param)) {
                 if (!empty($param['check_box_da_sua']) || !empty($param['check_box_dang_sua']) || !empty($param['check_box_chua_sua'] != 0)) {
                     $data = $this->phongMayUserRelation->PhongMayUserRelationQuery()
                         ->whereIn('status', $param)
-                        ->where('gv_id', $user->id)->get();
+                        ->where('gv_id', $user->id)
+                        ->orderBy('created_at','desc')->get();
                 } else {
-                    $data = $this->phongMayUserRelation->PhongMayUserRelationQuery()->where('gv_id', $user->id)->get();
+                    $data = $this->phongMayUserRelation->PhongMayUserRelationQuery()->where('gv_id', $user->id)->orderBy('created_at','desc')->get();
                 }
             } else {
-                $data = $this->phongMayUserRelation->PhongMayUserRelationQuery()->where('gv_id', $user->id)->get();
+                $data = $this->phongMayUserRelation->PhongMayUserRelationQuery()->where('gv_id', $user->id)->orderBy('created_at','desc')->get();
             }
             return $data;
         } else {
@@ -170,9 +170,10 @@ class PhongMayUserRelationRepository implements PhongMayUserRelationRepositoryIn
                         ->whereIn('status', $param)->get();
                 } else {
                     $data = $this->phongMayUserRelation->PhongMayUserRelationQuery()->get();
+                    dd($data);
                 }
             } else {
-                $data = $this->phongMayUserRelation->PhongMayUserRelationQuery()->get();
+                $data = $this->phongMayUserRelation->PhongMayUserRelationQuery()->orderBy('created_at','desc')->get();
             }
             return $data;
         }
