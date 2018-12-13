@@ -66,6 +66,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::get('get-dk-nghi', 'Api\DangKyNghiController@getDKNghi');
     Route::post('add-mo-ta', 'Api\PhongMayController@addMoTaMay');
     Route::get('list-mo-ta', 'Api\PhongMayController@getMoTaMay');
+    Route::get('export-danh-sach-loi', 'Api\PhongMayController@exportDanhSachLoi');
     Route::put('update-mo-ta/{id}', 'Api\PhongMayController@updateMoTa');
     Route::get('get-user', 'Api\AuthController@getUser');
 
