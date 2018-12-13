@@ -10,6 +10,7 @@ use App\Repositories\Interfaces\PhongMayUserRelationRepositoryInterface;
 use Illuminate\Http\Request;
 use JWTAuth;
 use Excel;
+
 class PhongMayController extends Controller
 {
     /**
@@ -197,7 +198,7 @@ class PhongMayController extends Controller
         $tokenHeader = $request->header('Authorization');
         $tokenUser = explode(' ', $tokenHeader, 2)[1];
         $user = JWTAuth::toUser($tokenUser);
-        $data = $this->phongMayUserRelation->list($user , $request->all());
+        $data = $this->phongMayUserRelation->list($user, $request->all());
         try {
             if ($data) {
                 return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
@@ -214,7 +215,6 @@ class PhongMayController extends Controller
     {
         $validator = \Validator::make($request->all(), [
             'phong_may_id' => 'required',
-            'mota_gv' => 'required'
         ]);
         if ($validator->fails()) {
 
@@ -230,22 +230,34 @@ class PhongMayController extends Controller
             return $this->dataError(Message::ERROR, $array, StatusCode::BAD_REQUEST);
 
         } else {
-
             $tokenHeader = $request->header('Authorization');
             $tokenUser = explode(' ', $tokenHeader, 2)[1];
             $user = JWTAuth::toUser($tokenUser);
             $data = $request->all();
             $data['gv_id'] = $user->id;
-            $saveMoTa = $this->phongMayUserRelation->save($data);
             try {
-                if ($saveMoTa) {
-                    return $this->dataSuccess(Message::SUCCESS, true, StatusCode::CREATED);
+                if ($request->status == 1) {
+                    if ($request->mo_ta != null) {
+                        $saveMoTa = $this->phongMayUserRelation->save($data);
+                    } else {
+                        return $this->dataError('Phòng có máy mỗi vui lòng nhập mô tả', false, StatusCode::BAD_REQUEST);
+                    }
+                    if ($saveMoTa) {
+                        return $this->dataSuccess(Message::SUCCESS, true, StatusCode::CREATED);
+                    } else {
+                        return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+                    }
                 } else {
-                    return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+                    $data['mota_gv'] = 'Bình Thường';
+                    $saveMoTa = $this->phongMayUserRelation->save($data);
+                    if ($saveMoTa) {
+                        return $this->dataSuccess(Message::SUCCESS, true, StatusCode::CREATED);
+                    } else {
+                        return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+                    }
                 }
-
             } catch (\Exception $e) {
-                return $this->dataError(Message::SERVER_ERROR, false, StatusCode::SERVER_ERROR);
+                return $this->dataError(Message::SERVER_ERROR, $e->getMessage(), StatusCode::SERVER_ERROR);
             }
         }
     }
@@ -341,12 +353,13 @@ class PhongMayController extends Controller
             return $this->dataError(Message::SERVER_ERROR, false, StatusCode::SERVER_ERROR);
         }
     }
+
     public function exportDanhSachLoi(Request $request)
     {
         $tokenHeader = $request->header('Authorization');
         $tokenUser = explode(' ', $tokenHeader, 2)[1];
         $user = JWTAuth::toUser($tokenUser);
-        $list = $this->phongMayUserRelation->exportList($user,$request->all());
+        $list = $this->phongMayUserRelation->exportList($user, $request->all());
         $fileName = 'Danh_Sach_May_Loi' . date("H_i_s");
         Excel::create($fileName, function ($excel) use ($list) {
             $excel->sheet('New sheet', function ($sheet) use ($list) {
