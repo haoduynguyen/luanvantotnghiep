@@ -22,6 +22,7 @@ class PhongMayUserRelation extends Model
         'ktv_id',
         'mota_gv',
         'mota_ktv',
+        'status',
     ];
 
     public function phongMay()
