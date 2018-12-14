@@ -100,7 +100,7 @@ class MuonPhongController extends Controller
                 return $this->dataError(Message::SERVER_ERROR, $e, StatusCode::SERVER_ERROR);
             }
         } else {
-            return $this->dataError('Không thể đăng ký mượn phòng!', false, StatusCode ::BAD_REQUEST);
+            return $this->dataError('Không thể đăng ký mượn phòng thấp hơn ngày hiện tại!', false, StatusCode ::BAD_REQUEST);
         }
     }
 
@@ -208,7 +208,7 @@ class MuonPhongController extends Controller
                 return $this->dataError(Message::SERVER_ERROR, 'false', StatusCode::SERVER_ERROR);
             }
         } else {
-            return $this->dataError('Không thể xóa vì đăng ký đã hết hạn!');
+            return $this->dataError('Không thể xóa vì đăng ký đã hết hạn!',false , StatusCode::BAD_REQUEST);
         }
 
     }

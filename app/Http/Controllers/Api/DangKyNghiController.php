@@ -92,13 +92,13 @@ class DangKyNghiController extends Controller
                     if ($user->id == $lichDay->user_id) {
                         if ($lichDays) {
                             foreach ($lichDays as $item) {
-                                $saveDangKyNghi[] = $this->dangKyNghi->save(['gv_id' => $item->user_id, 'lich_day_id' => $item->id, 'status' => 1, 'tuan_id' => $request->tuan_id,'ngay_nghi'=>$request->ngay_nghi]);
+                                $saveDangKyNghi[] = $this->dangKyNghi->save(['gv_id' => $item->user_id, 'lich_day_id' => $item->id, 'status' => 1, 'tuan_id' => $request->tuan_id, 'ngay_nghi' => $request->ngay_nghi]);
                             }
                             if ($saveDangKyNghi) {
                                 return $this->dataSuccess(Message::SUCCESS, $saveDangKyNghi, StatusCode::SUCCESS);
                             }
                         } else {
-                            $saveDangKyNghi[] = $this->dangKyNghi->save(['gv_id' => $lichDays->user_id, 'lich_day_id' => $request->lich_day_id, 'status' => 1, 'tuan_id' => $request->tuan_id,'ngay_nghi'=>$request->ngay_nghi]);
+                            $saveDangKyNghi[] = $this->dangKyNghi->save(['gv_id' => $lichDays->user_id, 'lich_day_id' => $request->lich_day_id, 'status' => 1, 'tuan_id' => $request->tuan_id, 'ngay_nghi' => $request->ngay_nghi]);
                             if ($saveDangKyNghi) {
                                 return $this->dataSuccess(Message::SUCCESS, $saveDangKyNghi, StatusCode::SUCCESS);
                             }
@@ -187,14 +187,26 @@ class DangKyNghiController extends Controller
      */
     public function destroy($id)
     {
-//        $now = new DateTime();
-//        $dateNow = $now->format('Y-m-d');
-//        $data = $this->dangKyNghi->get($id);
-//        if($dateNow < $data->ngay_nghi)
-//        {
-//
-//        }
+        $now = new DateTime();
+        $dateNow = $now->format('Y-m-d');
+        try {
+            $data = $this->dangKyNghi->get($id);
+            if ($dateNow < $data->ngay_nghi) {
+                $deleteDkNghi = $this->dangKyNghi->delete($id);
+                if ($deleteDkNghi) {
+                    return $this->dataSuccess(Message::SUCCESS, $deleteDkNghi, StatusCode::SUCCESS);
+                } else {
+                    return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+                }
+            } else {
+                return $this->dataError('Không được xóa những ngày đã nghỉ', false, StatusCode::BAD_REQUEST);
+            }
+        } catch (\Exception $e) {
+            return $this->dataError(Message::SERVER_ERROR, $e->getMessage(), StatusCode::SERVER_ERROR);
+        }
+
     }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -207,16 +219,15 @@ class DangKyNghiController extends Controller
         $tokenHeader = $request->header('Authorization');
         $tokenUser = explode(' ', $tokenHeader, 2)[1];
         $user = JWTAuth::toUser($tokenUser);
-        $data = $this->dangKyNghi->getDSNghi($user);
         try {
+            $data = $this->dangKyNghi->getDSNghi($user);
             if ($data) {
                 return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
             } else {
                 return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
             }
-
         } catch (\Exception $e) {
-            return $this->dataError(Message::SERVER_ERROR, false, StatusCode::SERVER_ERROR);
+            return $this->dataError(Message::SERVER_ERROR, $e->getMessage(), StatusCode::SERVER_ERROR);
         }
     }
 }

@@ -237,7 +237,7 @@ class PhongMayController extends Controller
             $data['gv_id'] = $user->id;
             try {
                 if ($request->status == 1) {
-                    if ($request->mo_ta != null) {
+                    if ($request->mota_gv != null) {
                         $saveMoTa = $this->phongMayUserRelation->save($data);
                     } else {
                         return $this->dataError('Phòng có máy mỗi vui lòng nhập mô tả', false, StatusCode::BAD_REQUEST);
