@@ -5,6 +5,7 @@ namespace App\Repositories\Repository;
 use App\Repositories\Interfaces\PhongMayUserRelationRepositoryInterface;
 use App\Models\PhongMayUserRelation;
 
+
 class PhongMayUserRelationRepository implements PhongMayUserRelationRepositoryInterface
 {
     private $phongMayUserRelation;
@@ -156,11 +157,24 @@ class PhongMayUserRelationRepository implements PhongMayUserRelationRepositoryIn
                         ->whereIn('status', $param)
                         ->where('gv_id', $user->id)
                         ->orderBy('created_at','desc')->get();
+                    foreach ($data as $k=>$v)
+                    {
+
+                        $v->ngay_tao = date('d-m-Y',strtotime($v->created_at));
+                        $v->ngay_sua = date('d-m-Y',strtotime($v->updated_at));
+                    }
                 } else {
                     $data = $this->phongMayUserRelation->PhongMayUserRelationQuery()->where('gv_id', $user->id)->orderBy('created_at','desc')->get();
                 }
+                return $data;
             } else {
                 $data = $this->phongMayUserRelation->PhongMayUserRelationQuery()->where('gv_id', $user->id)->orderBy('created_at','desc')->get();
+                foreach ($data as $k=>$v)
+                {
+
+                    $v->ngay_tao = date('d-m-Y',strtotime($v->created_at));
+                    $v->ngay_sua = date('d-m-Y',strtotime($v->updated_at));
+                }
             }
             return $data;
         } else {
@@ -168,12 +182,31 @@ class PhongMayUserRelationRepository implements PhongMayUserRelationRepositoryIn
                 if ($param['check_box_da_sua'] != 0 || $param['check_box_dang_sua'] != 0 || $param['check_box_chua_sua'] != 0) {
                     $data = $this->phongMayUserRelation->PhongMayUserRelationQuery()
                         ->whereIn('status', $param)->get();
+
+                    foreach ($data as $k=>$v)
+                    {
+                        $v->ngay_tao = date('d-m-Y',strtotime($v->created_at));
+                        $v->ngay_sua = date('d-m-Y',strtotime($v->updated_at));
+                    }
+
                 } else {
                     $data = $this->phongMayUserRelation->PhongMayUserRelationQuery()->get();
-                    dd($data);
+                    foreach ($data as $k=>$v)
+                    {
+
+                        $v->ngay_tao = date('d-m-Y',strtotime($v->created_at));
+                        $v->ngay_sua = date('d-m-Y',strtotime($v->updated_at));
+                    }
                 }
+                return $data;
             } else {
                 $data = $this->phongMayUserRelation->PhongMayUserRelationQuery()->orderBy('created_at','desc')->get();
+                foreach ($data as $k=>$v)
+                {
+
+                    $v->ngay_tao = date('d-m-Y',strtotime($v->created_at));
+                    $v->ngay_sua = date('d-m-Y',strtotime($v->updated_at));
+                }
             }
             return $data;
         }
