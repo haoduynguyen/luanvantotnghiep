@@ -170,8 +170,8 @@ class PhongMayUserRelationRepository implements PhongMayUserRelationRepositoryIn
                         ->whereIn('status', $param)->get();
                 } else {
                     $data = $this->phongMayUserRelation->PhongMayUserRelationQuery()->get();
-                    dd($data);
                 }
+                return $data;
             } else {
                 $data = $this->phongMayUserRelation->PhongMayUserRelationQuery()->orderBy('created_at','desc')->get();
             }
@@ -202,8 +202,8 @@ class PhongMayUserRelationRepository implements PhongMayUserRelationRepositoryIn
                     $data = $this->phongMayUserRelation->PhongMayUserRelationQuery()
                         ->where('phong_may_id', $param['phong_may_id'])
                         ->orWhereIn('status', [$param['check_box_chua_sua'], $param['check_box_dang_sua'], $param['check_box_da_sua']])->get();
-                    return $data;
                 }
+                return $data;
             }
             $data = $this->phongMayUserRelation->PhongMayUserRelationQuery()->get();
         }
