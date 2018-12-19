@@ -10,6 +10,7 @@ use App\Repositories\Interfaces\PhongMayUserRelationRepositoryInterface;
 use Illuminate\Http\Request;
 use JWTAuth;
 use Excel;
+use DateTime;
 
 class PhongMayController extends Controller
 {
@@ -235,26 +236,32 @@ class PhongMayController extends Controller
             $user = JWTAuth::toUser($tokenUser);
             $data = $request->all();
             $data['gv_id'] = $user->id;
+            $now = new DateTime();
             try {
-                if ($request->status == 1) {
-                    if ($request->mota_gv != null) {
+                //if($request->ngay_thong_bao == $now->format('Y-m-d')){
+                if (1 == 1) {
+                    if ($request->status == 1) {
+                        if ($request->mota_gv != null) {
+                            $saveMoTa = $this->phongMayUserRelation->save($data);
+                            if ($saveMoTa) {
+                                return $this->dataSuccess(Message::SUCCESS, true, StatusCode::CREATED);
+                            } else {
+                                return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+                            }
+                        } else {
+                            return $this->dataError('Phòng có máy mỗi vui lòng nhập mô tả', false, StatusCode::BAD_REQUEST);
+                        }
+                    } else {
+                        $data['mota_gv'] = 'Bình Thường';
                         $saveMoTa = $this->phongMayUserRelation->save($data);
-                    } else {
-                        return $this->dataError('Phòng có máy mỗi vui lòng nhập mô tả', false, StatusCode::BAD_REQUEST);
-                    }
-                    if ($saveMoTa) {
-                        return $this->dataSuccess(Message::SUCCESS, true, StatusCode::CREATED);
-                    } else {
-                        return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+                        if ($saveMoTa) {
+                            return $this->dataSuccess(Message::SUCCESS, true, StatusCode::CREATED);
+                        } else {
+                            return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+                        }
                     }
                 } else {
-                    $data['mota_gv'] = 'Bình Thường';
-                    $saveMoTa = $this->phongMayUserRelation->save($data);
-                    if ($saveMoTa) {
-                        return $this->dataSuccess(Message::SUCCESS, true, StatusCode::CREATED);
-                    } else {
-                        return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
-                    }
+                    return $this->dataError('Không thể thông báo trước hoặc sau ngày hiện tại', false, StatusCode::BAD_REQUEST);
                 }
             } catch (\Exception $e) {
                 return $this->dataError(Message::SERVER_ERROR, $e->getMessage(), StatusCode::SERVER_ERROR);

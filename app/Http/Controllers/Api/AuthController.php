@@ -34,12 +34,17 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
         if ($token = $this->guard()->attempt($credentials)) {
             $user = auth()->user();
-            $user['token'] = $token;
-            $user['profile'] = $user->profile;
-            return $this->dataSuccess(Message::SUCCESS, $user, StatusCode::SUCCESS);
+            if ($user->deleted_at == null) {
+                $user['token'] = $token;
+                $user['profile'] = $user->profile;
+                return $this->dataSuccess(Message::SUCCESS, $user, StatusCode::SUCCESS);
+            } else {
+                return $this->dataSuccess('Email không tồn tại vui lòng kiểm tra lại', false, StatusCode::UNAUTHORIZED);
+            }
         }
-        return $this->dataError( 'Unauthorized', false, StatusCode::UNAUTHORIZED);
+        return $this->dataError('Tài khoản hoặc mật khẩu không đúng', false, StatusCode::UNAUTHORIZED);
     }
+
     public function getUser()
     {
         $user = JWTAuth::user();

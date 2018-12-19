@@ -132,7 +132,6 @@ class UserRepository implements UserRepositoryInterface
 
     public function deleteMulti(array $data)
     {
-        dd($data);
         $del = $this->user->whereIn("id", $data["list_id"])->delete();
         if ($del) {
 
@@ -147,7 +146,6 @@ class UserRepository implements UserRepositoryInterface
         $data = $this->user->getUserQuery()->get();
         return $data;
     }
-
     public function getUserFromID($id)
     {
         $data = $this->user->getUserQuery()->find($id);

@@ -89,7 +89,7 @@ class UserController extends Controller
         } else {
             $data = $request->all();
             try {
-                $user = $this->user->save(['email' => $request->email, 'password' => Hash::make($request->password),"role_id" => $request->role_id]);
+                $user = $this->user->save(['email' => $request->email, 'password' => Hash::make($request->password), "role_id" => $request->role_id]);
                 if ($user) {
                     $userProfile = $this->userProfile->save($data);
                     $userProfile->update(['user_id' => $user->id]);
@@ -166,7 +166,7 @@ class UserController extends Controller
             $data = $this->user->get($id);
             //dd(Hash::make($request->old_password));
             try {
-                if (Hash::check($request->get("old_password"),$data->password)) {
+                if (Hash::check($request->get("old_password"), $data->password)) {
                     $newPassword = $this->user->update(['password' => Hash::make($request->new_password)], $id);
                     if ($newPassword) {
                         return $this->dataSuccess(Message::SUCCESS, true, StatusCode::SUCCESS);
@@ -212,7 +212,7 @@ class UserController extends Controller
 
         } else {
             $data = $request->all();
-            $user = $this->user->update($data,$id);
+            $user = $this->user->update($data, $id);
             $list = $this->userProfile->getByColumn("user_id", $id);
             $updateProfile = $this->userProfile->update($data, $list->id);
             try {
@@ -235,16 +235,16 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $dataProFile = $this->userProfile->getByColumn("user_id", $id);
-        if ($dataProFile) {
-            $deleteProfile = $this->userProfile->delete($dataProFile->id);
+        try {
+            $user = $this->user->delete($id);
+            if ($user) {
+                return $this->dataSuccess(Message::SUCCESS, true, StatusCode::SUCCESS);
+            } else {
+                return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+            }
+        } catch (\Exception $e) {
+            return $this->dataError(Message::SERVER_ERROR, $e->getMessage(), StatusCode::SERVER_ERROR);
         }
-        $dataRole = $this->userRole->getListByColumn('user_id', $id)->toArray();
-        $data["list_id"] = array_pluck($dataRole, 'id');
-        if ($dataRole) {
-            $deleteRole = $this->userRole->deleteMulti($data);
-        }
-
 
         /*try {
             if ($deleteUser) {

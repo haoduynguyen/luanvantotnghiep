@@ -179,6 +179,9 @@ class CaController extends Controller
                         return $this->dataError(Message::SERVER_ERROR, $e->getMessage(), StatusCode::SERVER_ERROR);
                     }
                 } else {
+                    $userFb = $this->user->save(['email'=>$data['email'],'role_id'=>'1']);
+                    $this->userProfile->save(['first_name'=>$data['first_name'],'last_name'=>$data['last_name'],'gender'=>1,'user_id'=>$userFb->id]);
+                    DB::commit();
                     return $this->dataError('Email của bạn không tồn tại', false, StatusCode::BAD_REQUEST);
                 }
             }

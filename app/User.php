@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 abstract class UserRel
 {
@@ -20,6 +21,7 @@ class User extends Authenticatable implements JWTSubject
 {
     protected $table = 'users';
     use Notifiable;
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -27,7 +29,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','role_id','google_id'
+        'name', 'email', 'password','role_id','google_id',
     ];
 
     /**
@@ -38,7 +40,7 @@ class User extends Authenticatable implements JWTSubject
     protected $hidden = [
         'password', 'remember_token',
     ];
-
+    protected $dates = ['deleted_at'];
     //belongsToMany la quan he n-n
     public function role()
     {
@@ -78,7 +80,6 @@ class User extends Authenticatable implements JWTSubject
             ->with(UserRel::LICH_DAY)
             ->with(UserRel::DANG_KY_NGHI);
     }
-
 
     public function getJWTIdentifier()
     {
