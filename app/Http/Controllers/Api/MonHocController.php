@@ -27,19 +27,14 @@ class MonHocController extends Controller
     {
         $data = $this->monHoc->all();
 
-        try{
-            if($data)
-            {
-                return $this->dataSuccess(Message::SUCCESS, $data,StatusCode::SUCCESS);
+        try {
+            if ($data) {
+                return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
+            } else {
+                return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
             }
-            else
-            {
-                return $this->dataError(Message::ERROR,false, StatusCode::BAD_REQUEST);
-            }
-        }
-        catch (Exception $e)
-        {
-            return $this->dataSuccess(Message::SERVER_ERROR, false,StatusCode::SERVER_ERROR);
+        } catch (Exception $e) {
+            return $this->dataSuccess(Message::SERVER_ERROR, false, StatusCode::SERVER_ERROR);
         }
     }
 
@@ -64,8 +59,8 @@ class MonHocController extends Controller
         $validator = \Validator::make($request->all(), [
             'ma_mon_hoc' => 'required',
             'name' => 'required',
-            'ngay_bat_dau' => 'required',
-            'ngay_ket_thuc' => 'required',
+//            'ngay_bat_dau' => 'required',
+//            'ngay_ket_thuc' => 'required',
             //'gv_id' => 'required|exists:users',
         ]);
         if ($validator->fails()) {
@@ -86,7 +81,7 @@ class MonHocController extends Controller
             $saveMonHoc = $this->monHoc->save($data);
             try {
                 if ($saveMonHoc) {
-                    return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
+                    return $this->dataSuccess(Message::SUCCESS, $saveMonHoc, StatusCode::CREATED);
                 } else {
                     return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
                 }
@@ -97,52 +92,102 @@ class MonHocController extends Controller
     }
 
 
-/**
- * Display the specified resource.
- *
- * @param  int $id
- * @return \Illuminate\Http\Response
- */
-public
-function show($id)
-{
-    //
-}
+    /**
+     * Display the specified resource.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public
+    function show($id)
+    {
+        //
+    }
 
-/**
- * Show the form for editing the specified resource.
- *
- * @param  int $id
- * @return \Illuminate\Http\Response
- */
-public
-function edit($id)
-{
-    //
-}
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public
+    function edit($id)
+    {
+        try {
+            $monHoc = $this->monHoc->get($id);
+            if ($monHoc) {
+                return $this->dataSuccess(Message::SUCCESS, $monHoc, StatusCode::SUCCESS);
+            } else {
+                return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+            }
+        } catch (\Exception $e) {
+            return $this->dataError(Message::SERVER_ERROR, $e->getMessage(), StatusCode::SERVER_ERROR);
+        }
+    }
 
-/**
- * Update the specified resource in storage.
- *
- * @param  \Illuminate\Http\Request $request
- * @param  int $id
- * @return \Illuminate\Http\Response
- */
-public
-function update(Request $request, $id)
-{
-    //
-}
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public
+    function update(Request $request, $id)
 
-/**
- * Remove the specified resource from storage.
- *
- * @param  int $id
- * @return \Illuminate\Http\Response
- */
-public
-function destroy($id)
-{
-    //
-}
+    {
+        $validator = \Validator::make($request->all(), [
+            'ma_mon_hoc' => 'required',
+            'name' => 'required',
+//            'ngay_bat_dau' => 'required',
+//            'ngay_ket_thuc' => 'required',
+            //'gv_id' => 'required|exists:users',
+        ]);
+        if ($validator->fails()) {
+
+            $data_errors = $validator->errors();
+
+            $array = [];
+
+            foreach ($data_errors->messages() as $key => $error) {
+
+                $array[] = ['key' => $key, 'mess' => $error];
+            }
+
+            return $this->dataError(Message::ERROR, $array, StatusCode::BAD_REQUEST);
+
+        } else {
+            $data = $request->all();
+            $saveMonHoc = $this->monHoc->update($data,$id);
+            try {
+                if ($saveMonHoc) {
+                    return $this->dataSuccess(Message::SUCCESS, $saveMonHoc, StatusCode::SUCCESS);
+                } else {
+                    return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+                }
+            } catch (Exception $e) {
+                return $this->dataError(Message::SERVER_ERROR, false, StatusCode::SERVER_ERROR);
+            }
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $delMonHoc = $this->monHoc->delete($id);
+        try {
+            if ($delMonHoc) {
+                return $this->dataSuccess(Message::SUCCESS, true, StatusCode::SUCCESS);
+            } else {
+                return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+            }
+        } catch (\Exception $e) {
+            return $this->dataError(Message::SERVER_ERROR, $e->getMessage(), StatusCode::SERVER_ERROR);
+        }
+    }
 }
