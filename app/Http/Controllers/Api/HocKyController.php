@@ -75,14 +75,12 @@ class HocKyController extends Controller
 
         } else {
             $namHoc = $request->nam_hoc;
-            $namHoc = explode('-',$namHoc);
-            if($namHoc[1]-$namHoc[0]==1 )
-            {
+            $namHoc = explode('-', $namHoc);
+            if ($namHoc[1] - $namHoc[0] == 1) {
                 //dd($request->nam_hoc);
                 $data = $request->all();
                 $saveHocKy = $this->hocky->save($data);
-            }
-            else{
+            } else {
                 return $this->dataError("Nhap sai!", false, StatusCode::BAD_REQUEST);
             }
             try {
@@ -117,7 +115,16 @@ class HocKyController extends Controller
     public
     function edit($id)
     {
-        //
+        try {
+            $hocKy = $this->hocky->get($id);
+            if ($hocKy) {
+                return $this->dataSuccess(Message::SUCCESS, $hocKy, StatusCode::SUCCESS);
+            } else {
+                return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+            }
+        } catch (\Exception $e) {
+            return $this->dataError(Message::SERVER_ERROR, $e->getMessage(), StatusCode::SERVER_ERROR);
+        }
     }
 
     /**
@@ -173,6 +180,15 @@ class HocKyController extends Controller
     public
     function destroy($id)
     {
-        //
+        $deleteHocKy = $this->hocky->delete($id);
+        try {
+            if ($deleteHocKy) {
+                return $this->dataSuccess(Message::SUCCESS, true, StatusCode::SUCCESS);
+            } else {
+                return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+            }
+        } catch (\Exception $e) {
+            return $this->dataError(Message::SERVER_ERROR, $e->getMessage(), StatusCode::SERVER_ERROR);
+        }
     }
 }

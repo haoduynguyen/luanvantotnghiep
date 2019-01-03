@@ -26,6 +26,9 @@ class PhongMayUserRelation extends Model
         'status',
         'mon_hoc_id',
         'tuan_id',
+        'lich_day_id',
+        'ca_id',
+        'thu_id'
     ];
 
     public function phongMay()
