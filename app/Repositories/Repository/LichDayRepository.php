@@ -166,7 +166,7 @@ class LichDayRepository implements LichDayRepositoryInterface
             })->get();
         return $data;
     }
-    public function getListDoubleLichDay($data,$param)
+    public function getListDoubleLichDay($data,$param )
     {
         $lichDay = $this->lichDay->lichDayQuery()->where('thu_id', $data->thu_id)
             ->where('nhom_lop_id',$data->nhom_lop_id)

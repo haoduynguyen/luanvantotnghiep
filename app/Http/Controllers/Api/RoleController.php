@@ -7,6 +7,7 @@ use App\Constants\StatusCode;
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\RoleRepositoryInterface;
 use App\Repositories\Interfaces\UserRoleRelationRepositoryInterface;
+use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\Http\Request;
 
 class RoleController extends Controller
@@ -18,17 +19,30 @@ class RoleController extends Controller
      */
     private $role;
     private $roleRelation;
+    private $user;
 
-    public function __construct(RoleRepositoryInterface $roleRepository, UserRoleRelationRepositoryInterface $relationRepository)
+    public function __construct(RoleRepositoryInterface $roleRepository,
+                                UserRoleRelationRepositoryInterface $relationRepository,
+                                UserRepositoryInterface $userRepository)
     {
         $this->role = $roleRepository;
         $this->roleRelation = $relationRepository;
+        $this->user = $userRepository;
     }
 
     public function index()
     {
-        $data = $this->role->all();
-        return $this->dataSuccess('success', $data, 200);
+        try {
+            $data = $this->role->all();
+            if ($data) {
+                return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
+            } else {
+                return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+            }
+        } catch (\Exception $e) {
+            return $this->dataError(Message::SERVER_ERROR, false, StatusCode::SERVER_ERROR);
+        }
+
     }
 
     /**
@@ -49,11 +63,11 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->all();
-        $saveRole = $this->role->save($data);
         try {
+            $data = $request->all();
+            $saveRole = $this->role->save($data);
             if ($saveRole) {
-                return $this->dataSuccess(Message::SUCCESS, $saveRole   , StatusCode::SUCCESS);
+                return $this->dataSuccess(Message::SUCCESS, $saveRole, StatusCode::SUCCESS);
             } else {
                 return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
             }
@@ -81,7 +95,16 @@ class RoleController extends Controller
      */
     public function edit($id)
     {
-        //
+        try {
+            $dataRole = $this->role->get($id);
+            if ($dataRole) {
+                return $this->dataSuccess(Message::SUCCESS, $dataRole, StatusCode::SUCCESS);
+            } else {
+                return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+            }
+        } catch (\Exception $e) {
+            return $this->dataError(Message::SERVER_ERROR, $e, StatusCode::SERVER_ERROR);
+        }
     }
 
     /**
@@ -93,9 +116,9 @@ class RoleController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $data = $request->all();
-        $updateRole = $this->role->update($data, $id);
         try {
+            $data = $request->all();
+            $updateRole = $this->role->update($data, $id);
             if ($updateRole) {
                 return $this->dataSuccess(Message::SUCCESS, true, StatusCode::SUCCESS);
             } else {
@@ -114,25 +137,19 @@ class RoleController extends Controller
      */
     public function destroy($id)
     {
-        $data = $this->roleRelation->getByColumn("role_id", $id);
-        //array_pluck($data,'id');
-        //dd($data);
-
+        $data = $this->user->getByColumn("role_id", $id);
         try {
             if ($data) {
                 return $this->dataError("Ko the xoa vi co ton tai khoa ngoai!", false, StatusCode::BAD_REQUEST);
             } else {
                 $deleteRole = $this->role->delete($id);
-                if($deleteRole)
-                {
+                if ($deleteRole) {
                     return $this->dataSuccess(Message::SUCCESS, true, StatusCode::SUCCESS);
-                }
-                else{
-                    return $this->dataError("ID khong ton tai!",false, StatusCode::BAD_REQUEST);
+                } else {
+                    return $this->dataError("ID khong ton tai!", false, StatusCode::BAD_REQUEST);
                 }
             }
-        } catch
-            (Exception $e) {
+        } catch (Exception $e) {
             return $this->dataError(Message::SERVER_ERROR, $e, StatusCode::SERVER_ERROR);
         }
     }
