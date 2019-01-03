@@ -122,8 +122,8 @@ class PhongMayController extends Controller
      */
     public function edit($id)
     {
-        $data = $this->phongMay->get($id);
         try {
+            $data = $this->phongMay->get($id);
             if ($data) {
                 return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
             } else {
@@ -247,13 +247,13 @@ class PhongMayController extends Controller
             $data['gv_id'] = $user->id;
             $now = new DateTime();
             try {
-                if($request->ngay_thong_bao == $now->format('Y-m-d')){
-                //if (1 == 1) {
+                if ($request->ngay_thong_bao == $now->format('Y-m-d')) {
+                    //if (1 == 1) {
                     if ($request->status == 1) {
                         if ($request->mota_gv != null) {
                             $saveMoTa = $this->phongMayUserRelation->save($data);
                             if ($saveMoTa) {
-                                return $this->dataSuccess(Message::SUCCESS, true, StatusCode::CREATED);
+                                return $this->dataSuccess(Message::SUCCESS, $saveMoTa, StatusCode::CREATED);
                             } else {
                                 return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
                             }
@@ -264,7 +264,7 @@ class PhongMayController extends Controller
                         $data['mota_gv'] = 'Bình Thường';
                         $saveMoTa = $this->phongMayUserRelation->save($data);
                         if ($saveMoTa) {
-                            return $this->dataSuccess(Message::SUCCESS, true, StatusCode::CREATED);
+                            return $this->dataSuccess(Message::SUCCESS, $saveMoTa, StatusCode::CREATED);
                         } else {
                             return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
                         }
