@@ -122,7 +122,16 @@ class PhongMayController extends Controller
      */
     public function edit($id)
     {
-        //
+        $data = $this->phongMay->get($id);
+        try {
+            if ($data) {
+                return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
+            } else {
+                return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+            }
+        } catch (\Exception $e) {
+            return $this->dataError(Message::SERVER_ERROR, $e->getMessage(), StatusCode::SERVER_ERROR);
+        }
     }
 
     /**
@@ -238,8 +247,8 @@ class PhongMayController extends Controller
             $data['gv_id'] = $user->id;
             $now = new DateTime();
             try {
-                //if($request->ngay_thong_bao == $now->format('Y-m-d')){
-                if (1 == 1) {
+                if($request->ngay_thong_bao == $now->format('Y-m-d')){
+                //if (1 == 1) {
                     if ($request->status == 1) {
                         if ($request->mota_gv != null) {
                             $saveMoTa = $this->phongMayUserRelation->save($data);
