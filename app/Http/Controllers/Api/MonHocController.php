@@ -26,7 +26,6 @@ class MonHocController extends Controller
     public function index()
     {
         $data = $this->monHoc->all();
-
         try {
             if ($data) {
                 return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);

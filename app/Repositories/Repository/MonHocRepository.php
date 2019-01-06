@@ -28,6 +28,10 @@ class MonHocRepository implements MonHocRepositoryInterface
     public function all($columns = array('*'))
     {
         $listData = $this->monHoc->get($columns);
+        foreach ($listData as $k => $v) {
+            $v->ngay_bat_dau = date('d-m-Y', strtotime($v->ngay_bat_dau));
+            $v->ngay_ket_thuc = date('d-m-Y', strtotime($v->ngay_ket_thuc));
+        }
         return $listData;
     }
 
@@ -146,5 +150,7 @@ class MonHocRepository implements MonHocRepositoryInterface
             return false;
         }
     }
+
+
 
 } 

@@ -15,6 +15,7 @@ class PhongMay extends Model
         'name',
         'mo_ta',
         'so_may',
+        'ghi_chu'
     ];
     public function giangVien()
     {

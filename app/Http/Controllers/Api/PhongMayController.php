@@ -31,6 +31,7 @@ class PhongMayController extends Controller
     public function index()
     {
         $data = $this->phongMay->all();
+
         try {
             if ($data) {
                 return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
@@ -147,7 +148,6 @@ class PhongMayController extends Controller
             'name' => 'required',
             'mo_ta' => 'required',
             'so_may' => 'required',
-
         ]);
         if ($validator->fails()) {
 
@@ -185,7 +185,16 @@ class PhongMayController extends Controller
      */
     public function destroy($id)
     {
-        $this->phongMay->delete($id);
+        $deletePM = $this->phongMay->delete($id);
+        try {
+            if ($deletePM) {
+                return $this->dataSuccess(Message::SUCCESS, true, StatusCode::SUCCESS);
+            } else {
+                return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+            }
+        } catch (\Exception $e) {
+            return $this->dataError(Message::SERVER_ERROR, $e->getMessage(), StatusCode::SERVER_ERROR);
+        }
     }
 
     public function showMoTaID($id)
@@ -319,7 +328,7 @@ class PhongMayController extends Controller
         } else if ($user->role_id == 2) {
             $validator = \Validator::make($request->all(), [
                 //'phong_may_id' => 'required',
-                'mota_ktv' => 'required',
+                //'mota_ktv' => 'required',
                 //'status' => 'required',
 
             ]);
