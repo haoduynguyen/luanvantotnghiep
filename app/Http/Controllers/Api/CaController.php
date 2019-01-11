@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\CaRepositoryInterface;
 use App\Repositories\Interfaces\UserProfileRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
+use App\User;
 use Client;
 use DB;
 use Illuminate\Http\Request;

@@ -16,6 +16,7 @@ class Role extends Model
     protected $fillable = [
         'id',
         'name',
+        'permission'
     ];
     public $timestamps = false;
 

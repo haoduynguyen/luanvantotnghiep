@@ -65,9 +65,12 @@ class RoleController extends Controller
     {
         try {
             $data = $request->all();
-            $saveRole = $this->role->save($data);
-            if ($saveRole) {
-                return $this->dataSuccess(Message::SUCCESS, $saveRole, StatusCode::SUCCESS);
+            $data['permission'] = json_encode($request->permission);
+            $roleID = $this->role->get($request->role_id);
+             $roleID->update(['permission'=>null]);
+            $updateRole = $this->role->update($data, $request->role_id);
+            if ($updateRole) {
+                return $this->dataSuccess(Message::SUCCESS, true, StatusCode::SUCCESS);
             } else {
                 return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
             }
@@ -118,7 +121,8 @@ class RoleController extends Controller
     {
         try {
             $data = $request->all();
-            $updateRole = $this->role->update($data, $id);
+            $data['permission'] = json_encode($request->permission);
+            $updateRole = $this->role->update($data, $request->role_id);
             if ($updateRole) {
                 return $this->dataSuccess(Message::SUCCESS, true, StatusCode::SUCCESS);
             } else {
