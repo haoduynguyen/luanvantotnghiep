@@ -49,6 +49,7 @@ class AuthController extends Controller
     {
         $user = JWTAuth::user();
         $user['profile'] = $user->profile;
+        $user['role'] = $user->role;
         try {
             if ($user) {
                 return $this->dataSuccess(Message::SUCCESS, $user, StatusCode::SUCCESS);
