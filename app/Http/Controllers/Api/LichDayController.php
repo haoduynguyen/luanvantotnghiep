@@ -222,7 +222,7 @@ class LichDayController extends Controller
 //                        $minDate = $temp;
 //                    }
 //                }
-                $thangBatDau = date('Y-m-d', strtotime($minDate . '+' . ' 238 days'));
+                $thangBatDau = date('Y-m-d', strtotime($minDate . '+' . ' 294 days'));
                 $tuan = $this->tuan->all();
                 $i = 0;
                 foreach ($tuan as $itemTuan) {
@@ -231,6 +231,7 @@ class LichDayController extends Controller
                     $i += 7;
                     $this->tuan->update(['ngay_bat_dau' => $ngay_bat_dau, 'ngay_ket_thuc' => $ngay_ket_thuc], $itemTuan->id);
                 }
+
                 foreach ($data as $item) {
                     $thoigianhoc = explode('-', $item->f_lichin);
                     $monHocExists = $this->monHoc->getByColumn('ma_mon_hoc', $item->f_mamh);

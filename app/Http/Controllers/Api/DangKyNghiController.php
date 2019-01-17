@@ -230,4 +230,27 @@ class DangKyNghiController extends Controller
             return $this->dataError(Message::SERVER_ERROR, $e->getMessage(), StatusCode::SERVER_ERROR);
         }
     }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $data = $request->all();
+        $now = new DateTime();
+        $dateNow = $now->format('Y-m-d H:i:s');
+        $dateDb = $this->dangKyNghi->get($id);
+        if ($dateNow <= $dateDb->ngay_nghi) {
+            $data['status'] = 0;
+            $updateStatus = $this->dangKyNghi->update($data, $id);
+            try {
+                if ($updateStatus) {
+                    return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
+                } else {
+                    return $this->dataError(Message::ERROR, 'false', StatusCode::BAD_REQUEST);
+                }
+            } catch (\Exception $e) {
+                return $this->dataError(Message::SERVER_ERROR, 'false', StatusCode::SERVER_ERROR);
+            }
+        } else {
+            return $this->dataError('Không thể xóa vì đăng ký đã hết hạn!', false, StatusCode::BAD_REQUEST);
+        }
+    }
 }

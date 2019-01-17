@@ -87,7 +87,16 @@ class CaController extends Controller
      */
     public function edit($id)
     {
-        //
+        try {
+            $data = $this->ca->get($id);
+            if ($data) {
+                return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
+            } else {
+                return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+            }
+        } catch (Exception $e) {
+            return $this->dataSuccess(Message::SERVER_ERROR, $e->getMessage(), StatusCode::SERVER_ERROR);
+        }
     }
 
     /**

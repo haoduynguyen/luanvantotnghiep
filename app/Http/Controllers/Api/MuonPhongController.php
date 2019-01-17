@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Constants\Message;
 use App\Constants\StatusCode;
 use App\Http\Controllers\Controller;
-use App\User;
 use App\Repositories\Interfaces\DangKyMuonPhongRepositoryInterface;
 use App\Repositories\Interfaces\TuanMuonPhongRelationRepositoryInterface;
 use DateTime;
@@ -169,7 +168,6 @@ class MuonPhongController extends Controller
         } else {
             return $this->dataError('Không thể xóa!', false, StatusCode ::BAD_REQUEST);
         }
-
     }
 
     public function getDSMuonPhong(Request $request)
@@ -208,7 +206,7 @@ class MuonPhongController extends Controller
                 return $this->dataError(Message::SERVER_ERROR, 'false', StatusCode::SERVER_ERROR);
             }
         } else {
-            return $this->dataError('Không thể xóa vì đăng ký đã hết hạn!',false , StatusCode::BAD_REQUEST);
+            return $this->dataError('Không thể xóa vì đăng ký đã hết hạn!', false, StatusCode::BAD_REQUEST);
         }
 
     }

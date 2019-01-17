@@ -41,7 +41,6 @@ class DangKyNghiRepository implements DangKyNghiRepositoryInterface
     public function save(array $data)
     {
         return $this->dangKyNghi->create($data);
-
     }
 
     public function update(array $data, $id)

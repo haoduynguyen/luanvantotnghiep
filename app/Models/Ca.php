@@ -12,6 +12,8 @@ class Ca extends Model
         'id',
         'name',
         'description',
+        'gio_bat_dau',
+        'gio_ket_thuc',
     ];
     public $timestamps = true;
 }
