@@ -25,13 +25,14 @@
     <thead>
     <tr class="center">
         <th style="text-align: center">Phòng Máy</th>
-        <th style="text-align: center">Tên Giảng Viên</th>
-        <th style="text-align: center">Mô Tả Giảng Viên</th>
-        <th style="text-align: center">Tên Kỷ Thuật Viên</th>
-        <th style="text-align: center">Mô tả Kỷ Thuật Viên</th>
+        <th style="text-align: center">Giảng Viên</th>
+        <th style="text-align: center">Mô Tả Của Giảng Viên</th>
+        <th style="text-align: center">Kỹ Thuật Viên</th>
+        <th style="text-align: center">Tình Trạng</th>
+        <th style="text-align: center">Ghi Chú</th>
         <th style="text-align: center">Ngày Ghi Nhận</th>
         <th style="text-align: center">Ngày Sửa</th>
-        <th style="text-align: center">Tình Trạng</th>
+
         <th style="text-align: center" colspan="2">Chữ Ký</th>
     </tr>
     </thead>
@@ -44,7 +45,7 @@
         $dataPlant['phongMay'] = (!empty($item->phongMay->name)) ? $item->phongMay->name : "-";
         $dataPlant['tenGiangVien'] = (isset($item->giangVien->profile)) ? $item->giangVien->profile->first_name . ' ' . $item->giangVien->profile->last_name : "-";
         $dataPlant['moTaGiangVien'] = (isset($item->mota_gv)) ? $item->mota_gv : "-";
-        $dataPlant['tenKyThuatVien'] = (isset($item->kyThuatVien->profile)) ?  $item->kyThuatVien->profile->first_name . ' ' . $item->kyThuatVien->profile->last_name : "-";
+        $dataPlant['tenKyThuatVien'] = (isset($item->kyThuatVien->profile)) ? $item->kyThuatVien->profile->first_name . ' ' . $item->kyThuatVien->profile->last_name : "-";
         $dataPlant['moTaKyThuatVien'] = (isset($item->mota_ktv)) ? $item->mota_ktv : "-";
         $dataPlant['ngayGhiNhan'] = (isset($item->created_at)) ? $item->created_at : "-";
         $dataPlant['ngaySua'] = (isset($item->updated_at) ? $item->updated_at : "-");
@@ -55,10 +56,17 @@
             <td style="text-align: center">{{$dataPlant['tenGiangVien']}}</td>
             <td style="text-align: center">{{$dataPlant['moTaGiangVien']}}</td>
             <td style="text-align: center">{{$dataPlant['tenKyThuatVien']}}</td>
+            @if($dataPlant['tinhTrang']==1)
+                <td style="text-align: center">Chưa sửa</td>
+            @elseif($dataPlant['tinhTrang']==2)
+                <td style="text-align: center">Đang sửa</td>
+            @else
+                <td style="text-align: center">Đã sửa</td>
+            @endif
             <td style="text-align: center">{{$dataPlant['moTaKyThuatVien']}}</td>
             <td style="text-align: center">{{$dataPlant['ngayGhiNhan']}}</td>
             <td style="text-align: center">{{$dataPlant['ngaySua']}}</td>
-            <td style="text-align: center">{{$dataPlant['tinhTrang']}}</td>
+
             <td style="text-align: center" colspan="2"></td>
         </tr>
     @endforeach

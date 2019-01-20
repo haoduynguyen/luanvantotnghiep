@@ -174,6 +174,7 @@ class LichDayController extends Controller
 
     public function import(Request $request)
     {
+
         $lichDay['hk_id'] = $request->hoc_ky;
         $hocKy = $this->hocKy->get($lichDay['hk_id']);
         $lichDayExists = $this->lichDay->getByColumn('hk_id', $lichDay['hk_id']);
@@ -203,6 +204,7 @@ class LichDayController extends Controller
             $data = \Excel::load($path, function ($reader) {
             })->get();
            // $totalData = count($data);
+            dd($data[0]);
             if ($data) {
                 foreach ($data as $item) {
                     $findNgayBatDau = (explode('-', $item['f_tghoc']));
