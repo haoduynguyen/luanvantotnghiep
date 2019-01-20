@@ -61,8 +61,37 @@ class DangKyNghiController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
+    public function checkLichDayUser($user, $lichDay, $lichDays, $tuan_id, $ngay_nghi, $lich_day_id)
+    {
+        if ($user->id == $lichDay->user_id) {
+            if ($lichDays) {
+                foreach ($lichDays as $item) {
+                    $saveDangKyNghi[] = $this->dangKyNghi->save(['gv_id' => $item->user_id, 'lich_day_id' => $item->id, 'status' => 1, 'tuan_id' => $tuan_id, 'ngay_nghi' => $ngay_nghi]);
+                }
+                if ($saveDangKyNghi) {
+                    return $this->dataSuccess(Message::SUCCESS, $saveDangKyNghi, StatusCode::SUCCESS);
+                }
+            } else {
+                dd('aaaa');
+                $saveDangKyNghi[] = $this->dangKyNghi->save(['gv_id' => $lichDays->user_id, 'lich_day_id' => $lich_day_id, 'status' => 1, 'tuan_id' => $tuan_id, 'ngay_nghi' => $ngay_nghi]);
+                if ($saveDangKyNghi) {
+                    dd('aaa');
+                    return $this->dataSuccess(Message::SUCCESS, $saveDangKyNghi, StatusCode::SUCCESS);
+                }
+            }
+        } else {
+            return $this->dataError('Bạn không có quyền đăng ký nghỉ cho lịch này', false, StatusCode::BAD_REQUEST);
+        }
+    }
+
     public function store(Request $request)
     {
+        $startTime = date("06:30");
+        $endTime = date("12:30");
+        $currentDate = date("Y-m-d");
+        $tokenHeader = $request->header('Authorization');
+        $tokenUser = explode(' ', $tokenHeader, 2)[1];
+        $user = JWTAuth::toUser($tokenUser);
         $validator = \Validator::make($request->all(), [
             'lich_day_id' => 'required',
             //'gv_id' => 'required|exists:users',
@@ -85,32 +114,29 @@ class DangKyNghiController extends Controller
             if ($request->lich_day_id) {
                 $lichDay = $this->lichDay->get($request->lich_day_id);
                 $lichDays = $this->lichDay->getListDoubleLichDay($lichDay, $data);
-                $tokenHeader = $request->header('Authorization');
-                $tokenUser = explode(' ', $tokenHeader, 2)[1];
-                $user = JWTAuth::toUser($tokenUser);
-                try {
-                    if ($user->id == $lichDay->user_id) {
-                        if ($lichDays) {
-                            foreach ($lichDays as $item) {
-                                $saveDangKyNghi[] = $this->dangKyNghi->save(['gv_id' => $item->user_id, 'lich_day_id' => $item->id, 'status' => 1, 'tuan_id' => $request->tuan_id, 'ngay_nghi' => $request->ngay_nghi]);
-                            }
-                            if ($saveDangKyNghi) {
-                                return $this->dataSuccess(Message::SUCCESS, $saveDangKyNghi, StatusCode::SUCCESS);
-                            }
-                        } else {
-                            $saveDangKyNghi[] = $this->dangKyNghi->save(['gv_id' => $lichDays->user_id, 'lich_day_id' => $request->lich_day_id, 'status' => 1, 'tuan_id' => $request->tuan_id, 'ngay_nghi' => $request->ngay_nghi]);
-                            if ($saveDangKyNghi) {
-                                return $this->dataSuccess(Message::SUCCESS, $saveDangKyNghi, StatusCode::SUCCESS);
-                            }
-                        }
-                    } else {
-                        return $this->dataError('Bạn không có quyền đăng ký nghỉ cho lịch này', false, StatusCode::BAD_REQUEST);
+                if ($request->ngay_nghi > $currentDate) {
+                    try {
+                        return $this->checkLichDayUser($user, $lichDay, $lichDays, $request->tuan_id, $request->ngay_nghi, $request->lich_day_id);
+                    } catch (Exception $e) {
+                        return $this->dataError(Message::SERVER_ERROR, false, StatusCode::SERVER_ERROR);
                     }
-
-                } catch (Exception $e) {
-                    return $this->dataError(Message::SERVER_ERROR, false, StatusCode::SERVER_ERROR);
+                } elseif ($request->ngay_nghi == $currentDate) {
+                    if ($request->timeDKN < $startTime) {
+                        try {
+                            return $this->checkLichDayUser($user, $lichDay, $lichDays, $request->tuan_id, $request->ngay_nghi, $request->lich_day_id);
+                        } catch (Exception $e) {
+                            return $this->dataError(Message::SERVER_ERROR, false, StatusCode::SERVER_ERROR);
+                        }
+                    } elseif (($request->ca_id == 3 || $request->ca_id == 4) && $request->timeDKN > $startTime && $request->timeDKN < $endTime) {
+                        return $this->checkLichDayUser($user, $lichDay, $lichDays, $request->tuan_id, $request->ngay_nghi, $request->lich_day_id);
+                    } else {
+                        return $this->dataError('Quá giờ báo nghỉ vui lòng liên hệ KTV', false, StatusCode::BAD_REQUEST);
+                    }
+                } else {
+                    return $this->dataError('Lịch này đã được dạy không thể báo nghỉ', false, StatusCode::BAD_REQUEST);
                 }
             }
+
         }
     }
 
@@ -253,4 +279,5 @@ class DangKyNghiController extends Controller
             return $this->dataError('Không thể xóa vì đăng ký đã hết hạn!', false, StatusCode::BAD_REQUEST);
         }
     }
+
 }
