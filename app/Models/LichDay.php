@@ -70,7 +70,7 @@ class LichDay extends Model
     }
     public function dangKyNghi()
     {
-        return $this->hasOne('App\Models\DangKyNghi','lich_day_id');
+        return $this->hasOne('App\Models\DangKyNghi','lich_day_id')->orderBy('created_at','desc');
     }
     public function lichDayQuery()
     {

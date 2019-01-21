@@ -82,6 +82,8 @@ class MuonPhongController extends Controller
         $data = $request->all();
         $now = new DateTime();
         $dateNow = $now->format('Y-m-d');
+        $startTime = date("06:30");
+        $endTime = date("12:30");
         $dateDb = $request->ngay_muon;
         if ($dateNow < $dateDb) {
             $data['status'] = 1;
@@ -98,6 +100,28 @@ class MuonPhongController extends Controller
             } catch (\Exception $e) {
                 return $this->dataError(Message::SERVER_ERROR, $e, StatusCode::SERVER_ERROR);
             }
+        } elseif ($dateNow == $dateDb) {
+            if ($startTime >= $request->timeDKN) {
+                $dkMuonPhong = $this->dkMuonPhong->save($data);
+                $this->tuanMuonPhong->save(['tuan_id' => $request->tuan_id, 'muon_phong_id' => $dkMuonPhong->id, 'status' => 'x']);
+                $dataSubmit = $this->dkMuonPhong->getDataSubmit($dkMuonPhong->id);
+                if ($dataSubmit) {
+                    return $this->dataSuccess(Message::SUCCESS, $dataSubmit, StatusCode::SUCCESS);
+                } else {
+                    return $this->dataError('Đã quá giờ mở cửa vui lòng liên hệ KTV', false, StatusCode::BAD_REQUEST);
+                }
+            } elseif (($request->ca_id == 3 || $request->ca_id == 4) && $request->timeDKN > $startTime && $request->timeDKN < $endTime) {
+                $dkMuonPhong = $this->dkMuonPhong->save($data);
+                $this->tuanMuonPhong->save(['tuan_id' => $request->tuan_id, 'muon_phong_id' => $dkMuonPhong->id, 'status' => 'x']);
+                $dataSubmit = $this->dkMuonPhong->getDataSubmit($dkMuonPhong->id);
+                if ($dataSubmit) {
+                    return $this->dataSuccess(Message::SUCCESS, $dataSubmit, StatusCode::SUCCESS);
+                } else {
+                    return $this->dataError('Đã quá giờ mở cửa vui lòng liên hệ KTV', false, StatusCode::BAD_REQUEST);
+                }
+            } else {
+                return $this->dataError('Đã quá giờ mở cửa vui lòng liên hệ KTV', false, StatusCode::BAD_REQUEST);
+            }
         } else {
             return $this->dataError('Không thể đăng ký mượn phòng thấp hơn ngày hiện tại!', false, StatusCode ::BAD_REQUEST);
         }
@@ -109,7 +133,8 @@ class MuonPhongController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public
+    function show($id)
     {
         //
     }
@@ -120,7 +145,8 @@ class MuonPhongController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public
+    function edit($id)
     {
         //
     }
@@ -132,7 +158,8 @@ class MuonPhongController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public
+    function update(Request $request, $id)
     {
         //
     }
@@ -143,7 +170,8 @@ class MuonPhongController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public
+    function destroy($id)
     {
         $now = new DateTime();
         $dateNow = $now->format('Y-m-d');
@@ -170,7 +198,8 @@ class MuonPhongController extends Controller
         }
     }
 
-    public function getDSMuonPhong(Request $request)
+    public
+    function getDSMuonPhong(Request $request)
     {
         $tokenHeader = $request->header('Authorization');
         $tokenUser = explode(' ', $tokenHeader, 2)[1];
@@ -187,14 +216,17 @@ class MuonPhongController extends Controller
         }
     }
 
-    public function updateStatus(Request $request, $id)
+    public
+    function updateStatus(Request $request, $id)
     {
         $data = $request->all();
         $now = new DateTime();
         $dateNow = $now->format('Y-m-d');
         $dateDb = $this->dkMuonPhong->get($id);
-        if ($dateNow <= $dateDb->ngay_muon) {
-            $data['status'] = 0;
+        $startTime = date("06:30");
+        $endTime = date("12:30");
+        $data['status'] = 0;
+        if ($dateNow < $dateDb->ngay_muon) {
             $updateStatus = $this->dkMuonPhong->update($data, $id);
             try {
                 if ($updateStatus) {
@@ -204,6 +236,24 @@ class MuonPhongController extends Controller
                 }
             } catch (\Exception $e) {
                 return $this->dataError(Message::SERVER_ERROR, 'false', StatusCode::SERVER_ERROR);
+            }
+        } elseif ($dateNow == $dateDb->ngay_muon) {
+            if ($startTime >= $request->timeDKN) {
+                $dataSubmit = $this->dkMuonPhong->update($data, $id);
+                if ($dataSubmit) {
+                    return $this->dataSuccess(Message::SUCCESS, $dataSubmit, StatusCode::SUCCESS);
+                } else {
+                    return $this->dataError('Đã quá giờ mở cửa vui lòng liên hệ KTV', false, StatusCode::BAD_REQUEST);
+                }
+            } elseif (($request->ca_id == 3 || $request->ca_id == 4) && $request->timeDKN > $startTime && $request->timeDKN < $endTime) {
+                $dataSubmit = $this->dkMuonPhong->update($data, $id);
+                if ($dataSubmit) {
+                    return $this->dataSuccess(Message::SUCCESS, $dataSubmit, StatusCode::SUCCESS);
+                } else {
+                    return $this->dataError('Đã quá giờ mở cửa vui lòng liên hệ KTV', false, StatusCode::BAD_REQUEST);
+                }
+            } else {
+                return $this->dataError('Đã quá giờ mở cửa vui lòng liên hệ KTV', false, StatusCode::BAD_REQUEST);
             }
         } else {
             return $this->dataError('Không thể xóa vì đăng ký đã hết hạn!', false, StatusCode::BAD_REQUEST);

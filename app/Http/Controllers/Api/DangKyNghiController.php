@@ -212,10 +212,13 @@ class DangKyNghiController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
-        $now = new DateTime();
-        $dateNow = $now->format('Y-m-d');
+        //$now = new DateTime();
+        $startTime = date("06:30");
+        $endTime = date("12:30");
+        $dateNow =  date("Y-m-d");
+
         try {
             $data = $this->dangKyNghi->get($id);
             if ($dateNow < $data->ngay_nghi) {
@@ -224,6 +227,24 @@ class DangKyNghiController extends Controller
                     return $this->dataSuccess(Message::SUCCESS, $deleteDkNghi, StatusCode::SUCCESS);
                 } else {
                     return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
+                }
+            } elseif ($dateNow == $data->ngay_nghi) {
+                if ($startTime >= $request->timeDKN) {
+                    $deleteDkNghi = $this->dangKyNghi->delete($id);
+                    if ($deleteDkNghi) {
+                        return $this->dataSuccess(Message::SUCCESS, $deleteDkNghi, StatusCode::SUCCESS);
+                    } else {
+                        return $this->dataError('Đã quá giờ mở cửa vui lòng liên hệ KTV', false, StatusCode::BAD_REQUEST);
+                    }
+                } elseif (($request->ca_id == 3 || $request->ca_id == 4) && $request->timeDKN > $startTime && $request->timeDKN < $endTime) {
+                    $deleteDkNghi = $this->dangKyNghi->delete($id);
+                    if ($deleteDkNghi) {
+                        return $this->dataSuccess(Message::SUCCESS, $deleteDkNghi, StatusCode::SUCCESS);
+                    } else {
+                        return $this->dataError('Đã quá giờ mở cửa vui lòng liên hệ KTV', false, StatusCode::BAD_REQUEST);
+                    }
+                } else {
+                    return $this->dataError('Đã quá giờ mở cửa vui lòng liên hệ KTV', false, StatusCode::BAD_REQUEST);
                 }
             } else {
                 return $this->dataError('Không được xóa những ngày đã nghỉ', false, StatusCode::BAD_REQUEST);
@@ -262,24 +283,41 @@ class DangKyNghiController extends Controller
     {
         $startTime = date("06:30");
         $endTime = date("12:30");
-        $currentDate = date("Y-m-d");
         $data = $request->all();
-        $now = new DateTime();
-        $dateDb = $this->dangKyNghi->get($id);
-        if ($currentDate <= $dateDb->ngay_nghi) {
-            $data['status'] = 0;
-            $updateStatus = $this->dangKyNghi->update($data, $id);
-            try {
+        $dateNow = date("Y-m-d");
+        $data['status'] = 0;
+        try {
+            $data = $this->dangKyNghi->get($id);
+            if ($dateNow < $data->ngay_nghi) {
+                $updateStatus = $this->dangKyNghi->update($data, $id);
                 if ($updateStatus) {
-                    return $this->dataSuccess(Message::SUCCESS, $data, StatusCode::SUCCESS);
+                    return $this->dataSuccess(Message::SUCCESS, $updateStatus, StatusCode::SUCCESS);
                 } else {
-                    return $this->dataError(Message::ERROR, 'false', StatusCode::BAD_REQUEST);
+                    return $this->dataError(Message::ERROR, false, StatusCode::BAD_REQUEST);
                 }
-            } catch (\Exception $e) {
-                return $this->dataError(Message::SERVER_ERROR, 'false', StatusCode::SERVER_ERROR);
+            } elseif ($dateNow == $data->ngay_nghi) {
+                if ($startTime >= $request->timeDKN) {
+                    $updateStatus = $this->dangKyNghi->update($data, $id);
+                    if ($updateStatus) {
+                        return $this->dataSuccess(Message::SUCCESS, $updateStatus, StatusCode::SUCCESS);
+                    } else {
+                        return $this->dataError('Đã quá giờ mở cửa vui lòng liên hệ KTV', false, StatusCode::BAD_REQUEST);
+                    }
+                } elseif (($request->ca_id == 3 || $request->ca_id == 4) && $request->timeDKN > $startTime && $request->timeDKN < $endTime) {
+                    $updateStatus = $this->dangKyNghi->update($data, $id);
+                    if ($updateStatus) {
+                        return $this->dataSuccess(Message::SUCCESS, $updateStatus, StatusCode::SUCCESS);
+                    } else {
+                        return $this->dataError('Đã quá giờ mở cửa vui lòng liên hệ KTV', false, StatusCode::BAD_REQUEST);
+                    }
+                } else {
+                    return $this->dataError('Đã quá giờ mở cửa vui lòng liên hệ KTV', false, StatusCode::BAD_REQUEST);
+                }
+            } else {
+                return $this->dataError('Không được xóa những ngày đã nghỉ', false, StatusCode::BAD_REQUEST);
             }
-        } else {
-            return $this->dataError('Không thể xóa vì đăng ký đã hết hạn!', false, StatusCode::BAD_REQUEST);
+        } catch (\Exception $e) {
+            return $this->dataError(Message::SERVER_ERROR, $e->getMessage(), StatusCode::SERVER_ERROR);
         }
     }
 

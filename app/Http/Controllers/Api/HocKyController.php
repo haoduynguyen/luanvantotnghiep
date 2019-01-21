@@ -81,7 +81,7 @@ class HocKyController extends Controller
                 $data = $request->all();
                 $saveHocKy = $this->hocky->save($data);
             } else {
-                return $this->dataError("Nhap sai!", false, StatusCode::BAD_REQUEST);
+                return $this->dataError("Nhap sai năm học !", false, StatusCode::BAD_REQUEST);
             }
             try {
                 if ($saveHocKy) {
