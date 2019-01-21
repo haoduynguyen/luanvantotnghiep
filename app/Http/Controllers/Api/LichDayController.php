@@ -180,31 +180,30 @@ class LichDayController extends Controller
         $lichDayExists = $this->lichDay->getByColumn('hk_id', $lichDay['hk_id']);
         //nhớ bắt validate học kỳ
         $date = date("Y-m-d");
-//        if ($date > $hocKy->ngay_bat_dau && $date < $hocKy->ngay_ket_thuc && !empty($lichDayExists)) {
-//            return $this->dataError('Học kỳ đã bắt đầu học không thể thay đổi', false, StatusCode::BAD_REQUEST);
-//        } elseif ($date > $hocKy->ngay_ket_thuc && !empty($lichDayExists)) {
-//            return $this->dataError('Học kỳ đã kết thúc không thể thay đổi', false, StatusCode::BAD_REQUEST);
-//        } elseif ($date < $hocKy->ngay_bat_dau && !empty($lichDayExists) && $request->tiep_tuc != 1) {
-//            return response()->json(['warn' => 'Học kỳ này đã được import lịch. Nếu nhấn Yes dữ liệu cũ của học kỳ này sẽ được thay thế bằng dữ liệu mới'], 200);
-//        }
-//        if ($request->tiep_tuc == 1) {
-//            $lichDays = $this->lichDay->getListByColumn('hk_id', $lichDay['hk_id'])->toArray();
-//            foreach ($lichDays as $item) {
-//                $lichDayTuanID = $this->lichDayTuan->getListByColumn('lich_day_id', $item['id'])->toArray();
-//                if ($lichDayTuanID) {
-//                    $data['list_id'] = array_pluck($lichDayTuanID, 'id');
-//                    $this->lichDayTuan->deleteMulti($data);
-//                }
-//            }
-//            $data['list_id'] = array_pluck($lichDays, 'id');
-//            $this->lichDay->deleteMulti($data);
-//        }
+        if ($date > $hocKy->ngay_bat_dau && $date < $hocKy->ngay_ket_thuc && !empty($lichDayExists)) {
+            return $this->dataError('Học kỳ đã bắt đầu học không thể thay đổi', false, StatusCode::BAD_REQUEST);
+        } elseif ($date > $hocKy->ngay_ket_thuc && !empty($lichDayExists)) {
+            return $this->dataError('Học kỳ đã kết thúc không thể thay đổi', false, StatusCode::BAD_REQUEST);
+        } elseif ($date < $hocKy->ngay_bat_dau && !empty($lichDayExists) && $request->tiep_tuc != 1) {
+            return response()->json(['warn' => 'Học kỳ này đã được import lịch. Nếu nhấn Yes dữ liệu cũ của học kỳ này sẽ được thay thế bằng dữ liệu mới'], 200);
+        }
+        if ($request->tiep_tuc == 1) {
+            $lichDays = $this->lichDay->getListByColumn('hk_id', $lichDay['hk_id'])->toArray();
+            foreach ($lichDays as $item) {
+                $lichDayTuanID = $this->lichDayTuan->getListByColumn('lich_day_id', $item['id'])->toArray();
+                if ($lichDayTuanID) {
+                    $data['list_id'] = array_pluck($lichDayTuanID, 'id');
+                    $this->lichDayTuan->deleteMulti($data);
+                }
+            }
+            $data['list_id'] = array_pluck($lichDays, 'id');
+            $this->lichDay->deleteMulti($data);
+        }
         if ($request->hasFile('file_import')) {
             $path = $request->file('file_import')->getRealPath();
             $data = \Excel::load($path, function ($reader) {
             })->get();
            // $totalData = count($data);
-            dd($data[0]);
             if ($data) {
                 foreach ($data as $item) {
                     $findNgayBatDau = (explode('-', $item['f_tghoc']));
@@ -225,17 +224,15 @@ class LichDayController extends Controller
 //                    }
 //                }
                 //dd($minDate);
-                $thangBatDau = date('Y-m-d', strtotime($minDate . '+' . ' 294 days'));
-                dd($thangBatDau);
+                //$thangBatDau = date('Y-m-d', strtotime($minDate . '+' . ' 294 days'));
                 $tuan = $this->tuan->all();
                 $i = 0;
                 foreach ($tuan as $itemTuan) {
-                    $ngay_bat_dau = date('Y-m-d', strtotime($thangBatDau . '+' . $i . 'days'));
+                    $ngay_bat_dau = date('Y-m-d', strtotime($minDate . '+' . $i . 'days'));
                     $ngay_ket_thuc = date('Y-m-d', strtotime($ngay_bat_dau . ' + 6 days'));
                     $i += 7;
                     $this->tuan->update(['ngay_bat_dau' => $ngay_bat_dau, 'ngay_ket_thuc' => $ngay_ket_thuc], $itemTuan->id);
                 }
-                dd('aaa');
                 foreach ($data as $item) {
                     $thoigianhoc = explode('-', $item->f_lichin);
                     $monHocExists = $this->monHoc->getByColumn('ma_mon_hoc', $item->f_mamh);
