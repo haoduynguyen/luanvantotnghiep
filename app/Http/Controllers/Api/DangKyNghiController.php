@@ -72,10 +72,10 @@ class DangKyNghiController extends Controller
                     return $this->dataSuccess(Message::SUCCESS, $saveDangKyNghi, StatusCode::SUCCESS);
                 }
             } else {
-                dd('aaaa');
+                //dd('aaaa');
                 $saveDangKyNghi[] = $this->dangKyNghi->save(['gv_id' => $lichDays->user_id, 'lich_day_id' => $lich_day_id, 'status' => 1, 'tuan_id' => $tuan_id, 'ngay_nghi' => $ngay_nghi]);
                 if ($saveDangKyNghi) {
-                    dd('aaa');
+                    //dd('aaa');
                     return $this->dataSuccess(Message::SUCCESS, $saveDangKyNghi, StatusCode::SUCCESS);
                 }
             }
@@ -111,6 +111,7 @@ class DangKyNghiController extends Controller
 
         } else {
             $data = $request->all();
+            //dd($request->ngay_nghi);
             if ($request->lich_day_id) {
                 $lichDay = $this->lichDay->get($request->lich_day_id);
                 $lichDays = $this->lichDay->getListDoubleLichDay($lichDay, $data);
@@ -259,11 +260,13 @@ class DangKyNghiController extends Controller
 
     public function updateStatus(Request $request, $id)
     {
+        $startTime = date("06:30");
+        $endTime = date("12:30");
+        $currentDate = date("Y-m-d");
         $data = $request->all();
         $now = new DateTime();
-        $dateNow = $now->format('Y-m-d H:i:s');
         $dateDb = $this->dangKyNghi->get($id);
-        if ($dateNow <= $dateDb->ngay_nghi) {
+        if ($currentDate <= $dateDb->ngay_nghi) {
             $data['status'] = 0;
             $updateStatus = $this->dangKyNghi->update($data, $id);
             try {

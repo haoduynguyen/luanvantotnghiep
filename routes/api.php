@@ -46,7 +46,7 @@ Route::get('show-mo-ta-id/{id}', 'Api\PhongMayController@showMoTaID');
 Route::delete('delete-may-loi/{id}', 'Api\PhongMayController@deleteID');
 
 Route::put('update-status-mp/{id}', 'Api\MuonPhongController@updateStatus');
-
+Route::put('update-status-nghi/{id}', 'Api\DangKyNghiController@updateStatus');
 
 
 Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
@@ -70,6 +70,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::get('export-danh-sach-loi', 'Api\PhongMayController@exportDanhSachLoi');
     Route::put('update-mo-ta/{id}', 'Api\PhongMayController@updateMoTa');
     Route::get('get-user', 'Api\AuthController@getUser');
+
 
 
 

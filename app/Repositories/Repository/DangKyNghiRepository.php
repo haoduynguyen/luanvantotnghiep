@@ -150,7 +150,8 @@ class DangKyNghiRepository implements DangKyNghiRepositoryInterface
     public function getDSNghi($user)
     {
         if ($user->role_id == 1) {
-            $data = $this->dangKyNghi->DangKyNghiQuery()->where('gv_id', $user->id)->get();
+            $data = $this->dangKyNghi->DangKyNghiQuery()->where('gv_id', $user->id)
+                ->where('status','!=',0)->get();
             foreach ($data as $v) {
                 $v->lichDay = $v->LichDay->lichDayQuery()->find($v->LichDay->id);
                 $v->setRelation('LichDay', null);
